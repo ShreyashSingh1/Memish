@@ -60,7 +60,7 @@ def understand(prompt, animate=False, normal=False, photo=False):
             text = str(response.text)
             text = text.replace("Caption:", "")
             text = text.replace("*", "")
-            print(text + 'NOR<AL')
+            # print(text + 'NOR<AL')
 
         return text
 

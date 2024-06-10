@@ -9,7 +9,7 @@ CORS(app)
 
 draw = Genrate.Gen()
 
-@app.route("/imgen1", methods=["POST"])
+@app.route("/imgen", methods=["POST"])
 def makeimage():
 
     data = request.json
@@ -38,7 +38,7 @@ def upload():
     return link
 
 
-@app.route("/imgen", methods=["POST"])
+@app.route("/imgen1", methods=["POST"])
 def anime():
 
     data = request.json
@@ -51,6 +51,12 @@ def anime():
 
     return link
 
+@app.route("/template", methods=["POST"])
+def template():
+    
+    data = request.json
+    data["prompt"] 
+    print(data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
