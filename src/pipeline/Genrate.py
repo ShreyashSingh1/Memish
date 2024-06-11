@@ -169,28 +169,41 @@ class MemeGenerator:
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
 
-    def analyze_prompt(self, prompt):
-        data = (f"Based on the prompt: '{prompt}', which meme template would be most suitable from the following options: "
-                f"{', '.join(self.template_paths.keys())}? Also, generate a suitable top and bottom text for the meme "
-                "from your own don't just copy the user prompt, Make sure the answer you are giving the key name should be "
-                "**meme_template** and funny as possible")
+        import time
 
-        response = self.model.generate_content(data)
-        response_text = response.text.strip().split('\n')
-        response_text = [item for item in response_text if item]
+    def analyze_prompt(self, prompt, retries=5):
+            for _ in range(retries):
+                try:
+                    data = (f"Based on the prompt: '{prompt}', which meme template would be most suitable from the following options: "
+                            f"{', '.join(self.template_paths.keys())}? Also, generate a suitable top and bottom text for the meme "
+                            "from your own don't just copy the user prompt, Make sure the answer you are giving the key name should be "
+                            "**meme_template** and funny as possible")
 
-        template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
-        top_text = response_text[1] if len(response_text) > 1 else ""
-        top_text = top_text.replace("**Top text**:", "").replace("**top text**:","").replace("**Bottom text**:", "").replace("**bottom text**:","")
-        bottom_text = response_text[2] if len(response_text) > 2 else ""
-        bottom_text = bottom_text.replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**Top text**:", "").replace(" **top text**: ","")
+                    response = self.model.generate_content(data)
+                    response_text = response.text.strip().split('\n')
+                    response_text = [item for item in response_text if item]
 
-        template_choice = self.clean_template_choice(template_choice)
-        template_path = self.template_paths.get(template_choice, template_paths[template_choice])
-        template_path = template_path.replace("\\", "/")
-        template_path = template_path.replace("/notebooks", "")
+                    template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
+                    top_text = response_text[1] if len(response_text) > 1 else ""
+                    top_text = top_text.replace("**Top text**:", "").replace("**top text**:","").replace("**Bottom text**:", "").replace("**bottom text**:","")
+                    bottom_text = response_text[2] if len(response_text) > 2 else ""
+                    bottom_text = bottom_text.replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**Top text**:", "").replace(" **top text**: ","")
 
-        return template_path, top_text, bottom_text
+                    template_choice = self.clean_template_choice(template_choice)
+                    template_path = self.template_paths.get(template_choice, self.template_paths[template_choice])
+                    template_path = template_path.replace("\\", "/")
+                    template_path = template_path.replace("/notebooks", "")
+
+                    return template_path, top_text, bottom_text
+
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                    if retries > 0:
+                        print("Retrying...")
+                    else:
+                        print("Retries exhausted, returning None")
+                        return None, None, None
+
 
     @staticmethod
     def clean_template_choice(template_choice):
