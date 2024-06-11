@@ -3,11 +3,13 @@ from flask_cors import CORS
 from src.logger import logging
 from src.pipeline import Genrate
 import src.utils as utils
+import cv2
 
 app = Flask(__name__)
 CORS(app)
 
 draw = Genrate.Gen()
+meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 
 @app.route("/imgen", methods=["POST"])
 def makeimage():
@@ -57,6 +59,11 @@ def template():
     data = request.json
     data["prompt"] 
     print(data)
+    meme = meme_generator.create_meme(data["prompt"])
+    cv2.imwrite("C:/Users/shrey/OneDrive/Desktop/Memish/artifacts/output_meme.jpg", meme)
+    link = utils.savenft("C:/Users/shrey/OneDrive/Desktop/Memish/artifacts/output_meme.jpg")
+
+    return link
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

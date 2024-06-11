@@ -1,39 +1,106 @@
-import requests
+import cv2
+import google.generativeai as genai
 import os
 
-GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
+class TextWrapper:
+    def __init__(self, font, font_scale, max_width):
+        self.font = font
+        self.font_scale = font_scale
+        self.max_width = max_width
 
-current_directory = os.getcwd()
-INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")
-OUTPUT = os.path.join(current_directory, "artifacts", "output.jpg")
+    def wrap_text(self, text):
+        words = text.split()
+        lines = []
+        while words:
+            line = ''
+            while words and cv2.getTextSize(line + words[0], self.font, self.font_scale, 1)[0][0] <= self.max_width:
+                line = line + (words.pop(0) + ' ')
+            lines.append(line.strip())
+        return lines
 
+class MemeGenerator:
+    def __init__(self, api_key, template_paths):
+        self.template_paths = template_paths
+        genai.configure(api_key=api_key)
+        self.model = genai.GenerativeModel("gemini-pro")
 
-def savenft(path):
+    def analyze_prompt(self, prompt):
+        data = (f"Based on the prompt: '{prompt}', which meme template would be most suitable from the following options: "
+                f"{', '.join(self.template_paths.keys())}? Also, generate a suitable top and bottom text for the meme "
+                "from your own don't just copy the user prompt, Make sure the answer you are giving the key name should be "
+                "**meme_template** and funny as possible")
 
-    with open(path, "rb") as f:
-        image_data = f.read()
+        response = self.model.generate_content(data)
+        response_text = response.text.strip().split('\n')
+        response_text = [item for item in response_text if item]
 
-    # Create FormData-like object
-    files = {"file": ("filename.jpg", image_data)}  # Adding the filename here
+        template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
+        top_text = response_text[1] if len(response_text) > 1 else ""
+        top_text = top_text.replace("**Top text**:", "").replace("**top text**:","").replace("**Bottom text**:", "").replace("**bottom text**:","")
+        bottom_text = response_text[2] if len(response_text) > 2 else ""
+        bottom_text = bottom_text.replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**Top text**:", "").replace(" **top text**: ","")
 
-    # Define headers (without Content-Type)
-    headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRCOWM5Q0UwQmE3NENiRjA4QkJlZjIwNDMzZEUwYjczNzUxNjI4RTgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5ODUwNDQ1NzM3MywibmFtZSI6IkZ1bmRFVEgifQ.JxTH4iRtScscfmb9mvZqhSqF9MKs2b0JJS2yof7hzF4",
-    }
+        template_choice = self.clean_template_choice(template_choice)
+        template_path = self.template_paths.get(template_choice, template_paths[template_choice])
+        template_path = template_path.replace("\\", "/")
+        template_path = template_path.replace("/notebooks", "")
 
-    # Make the request
-    response = requests.post(
-        "https://api.nft.storage/upload", files=files, headers=headers
-    )
+        return template_path, top_text, bottom_text
 
-    cid = response.json()["value"]["cid"]
+    @staticmethod
+    def clean_template_choice(template_choice):
+        for char in ":,-'`.?!**":
+            template_choice = template_choice.replace(char, "")
+        template_choice = template_choice.strip()
+        if template_choice.startswith('_'):
+            template_choice = template_choice[1:]
+        return template_choice
 
-    value = f"https://{cid}.ipfs.nftstorage.link/filename.jpg"
+    @staticmethod
+    def load_meme_template(template_path):
+        img = cv2.imread(template_path)
+        if img is None:
+            raise FileNotFoundError(f"Image not found at {template_path}")
+        return img
 
-    return value
+    def add_text_to_image(self, img, top_text, bottom_text, font=cv2.FONT_HERSHEY_SIMPLEX):
+        image_height, image_width, _ = img.shape
+        
+        top_text_1 = top_text.replace("**Top text:**", "").replace("**Top text**:", "").replace("**Top Text**:", "")
+        bottom_text_1 = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "")
 
+        wrapper = TextWrapper(font, 1, image_width - 20)
+        wrapped_top_text = wrapper.wrap_text(top_text_1)
+        wrapped_bottom_text = wrapper.wrap_text(bottom_text_1)
 
-template_paths = {
+        # Calculate positions for top text
+        y_offset = 10
+        for line in wrapped_top_text:
+            text_size = cv2.getTextSize(line, font, 1, 1)[0]
+            text_x = (image_width - text_size[0]) // 2
+            text_y = y_offset + text_size[1]
+            cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+            y_offset += text_size[1] + 10
+
+        # Calculate positions for bottom text
+        y_offset = image_height - 10
+        for line in reversed(wrapped_bottom_text):
+            text_size = cv2.getTextSize(line, font, 1, 1)[0]
+            text_x = (image_width - text_size[0]) // 2
+            text_y = y_offset
+            cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+            y_offset -= text_size[1] + 10
+
+        return img
+
+    def create_meme(self, prompt):
+        template_path, top_text, bottom_text = self.analyze_prompt(prompt)
+        img = self.load_meme_template(template_path)
+        return self.add_text_to_image(img, top_text, bottom_text)
+
+# Example usage
+if __name__ == "__main__":
+    template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
     "anime_boy_with_black_hair_and_a_black_jacket_looking_up_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/anime_boy_with_black_hair_and_a_black_jacket_looking_up_1.jpg",
     "anime_girl_with_long_hair_and_red_eyes_with_a_black_background_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/anime_girl_with_long_hair_and_red_eyes_with_a_black_background_1.jpg",
@@ -333,3 +400,13 @@ template_paths = {
     "woman_holding_a_stack_of_money_in_her_hand_and_handing_it_to_a_man_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/woman_holding_a_stack_of_money_in_her_hand_and_handing_it_to_a_man_1.jpg",
     "yoda_is_the_most_popular_character_in_star_wars_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/yoda_is_the_most_popular_character_in_star_wars_1.jpg"
 }
+
+    prompt = "We got investment"
+    api_key = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
+
+    meme_generator = MemeGenerator(api_key, template_paths)
+    try:
+        meme = meme_generator.create_meme(prompt)
+        cv2.imwrite("output_meme.jpg", meme)
+    except FileNotFoundError as e:
+        print(e)
