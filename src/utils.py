@@ -1,7 +1,8 @@
 import requests
 import os
 
-GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
+# GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
+GEN_KEY = "AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk"
 
 current_directory = os.getcwd()
 INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")

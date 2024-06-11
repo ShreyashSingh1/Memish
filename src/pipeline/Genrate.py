@@ -218,12 +218,19 @@ class MemeGenerator:
         wrapped_top_text = wrapper.wrap_text(top_text_1)
         wrapped_bottom_text = wrapper.wrap_text(bottom_text_1)
 
+        # Define shadow parameters
+        shadow_offset = 2
+        shadow_color = (0, 0, 0)  # Black shadow color
+
         # Calculate positions for top text
         y_offset = 10
         for line in wrapped_top_text:
             text_size = cv2.getTextSize(line, font, 1, 1)[0]
             text_x = (image_width - text_size[0]) // 2
             text_y = y_offset + text_size[1]
+            # Draw shadow first
+            cv2.putText(img, line, (text_x + shadow_offset, text_y + shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
+            # Then draw text
             cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
             y_offset += text_size[1] + 10
 
@@ -233,6 +240,9 @@ class MemeGenerator:
             text_size = cv2.getTextSize(line, font, 1, 1)[0]
             text_x = (image_width - text_size[0]) // 2
             text_y = y_offset
+            # Draw shadow first
+            cv2.putText(img, line, (text_x + shadow_offset, text_y - shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
+            # Then draw text
             cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
             y_offset -= text_size[1] + 10
 
