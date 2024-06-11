@@ -75,7 +75,7 @@ def video():
     logging.info("Genrating video meme!")
 
     template_paths = {
-        "laal_kabutar_meme_cat_is_dancing_three_cockroach_are_laughing": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/laal_kabutar_meme_cat_is dancing_three_cockroach_are_laughing_Oggy_and_cockroach.mp4",
+        "guy_is_dancing_three_person_are_laughing": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/laal_kabutar_meme_cat_is_dancing_three_cockroach_are_laughing_Oggy_and_cockroach.mp4",
         "modi_saying_kya_re_bete_tujhe_thakan_nhi_lag_rahi_kya": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/modi_saying_kya_re_bete_tujhe_thakan_nhi_lag_rahi_kya.mp4",
         "two_kids_are_running_after_seeing_something": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/two_kids_are_running_after_seeing_something.mp4",
         "one_eternity_later":"C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/one_eternity_later.mp4"

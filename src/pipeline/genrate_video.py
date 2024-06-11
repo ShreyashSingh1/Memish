@@ -1,6 +1,7 @@
 import cv2
+import subprocess
+import os
 import google.generativeai as genai
-
 
 class TextWrapper:
     def __init__(self, font, font_scale, max_width):
@@ -21,6 +22,7 @@ class TextWrapper:
 class VedioGenerator:
     def __init__(self, api_key, template_paths):
         self.template_paths = template_paths
+        self.font = cv2.FONT_HERSHEY_SIMPLEX
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
 
@@ -41,7 +43,6 @@ class VedioGenerator:
 
                 bottom_text = response_text[2] if len(response_text) > 2 else ""
                 bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "")
-
 
                 template_choice = self.clean_template_choice(template_choice)
                 template_path = self.template_paths.get(template_choice, self.template_paths[template_choice])
@@ -73,16 +74,16 @@ class VedioGenerator:
             raise FileNotFoundError(f"Video not found at {template_path}")
         return cap
 
-    def add_text_to_video(self, video_path, top_text, bottom_text, output_path, font=cv2.FONT_HERSHEY_SIMPLEX):
+    def add_text_to_video(self, video_path, top_text, bottom_text, output_path):
         cap = self.load_video_template(video_path)
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = None
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        wrapper = TextWrapper(font, 1, frame_width - 20)
+        wrapper = TextWrapper(self.font, 1, frame_width - 20)
         wrapped_top_text = wrapper.wrap_text(top_text)
         wrapped_bottom_text = wrapper.wrap_text(bottom_text)
 
@@ -101,25 +102,25 @@ class VedioGenerator:
             # Calculate positions for top text
             y_offset = 10
             for line in wrapped_top_text:
-                text_size = cv2.getTextSize(line, font, 1, 1)[0]
+                text_size = cv2.getTextSize(line, self.font, 1, 1)[0]
                 text_x = (image_width - text_size[0]) // 2
                 text_y = y_offset + text_size[1]
                 # Draw shadow first
-                cv2.putText(frame, line, (text_x + shadow_offset, text_y + shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
+                cv2.putText(frame, line, (text_x + shadow_offset, text_y + shadow_offset), self.font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
                 # Then draw text
-                cv2.putText(frame, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+                cv2.putText(frame, line, (text_x, text_y), self.font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
                 y_offset += text_size[1] + 10
 
             # Calculate positions for bottom text
             y_offset = image_height - 10
             for line in reversed(wrapped_bottom_text):
-                text_size = cv2.getTextSize(line, font, 1, 1)[0]
+                text_size = cv2.getTextSize(line, self.font, 1, 1)[0]
                 text_x = (image_width - text_size[0]) // 2
                 text_y = y_offset
                 # Draw shadow first
-                cv2.putText(frame, line, (text_x + shadow_offset, text_y - shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
+                cv2.putText(frame, line, (text_x + shadow_offset, text_y - shadow_offset), self.font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
                 # Then draw text
-                cv2.putText(frame, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+                cv2.putText(frame, line, (text_x, text_y), self.font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
                 y_offset -= text_size[1] + 10
 
             out.write(frame)
@@ -132,3 +133,24 @@ class VedioGenerator:
         template_path, top_text, bottom_text = self.analyze_prompt(prompt)
         self.add_text_to_video(template_path, top_text, bottom_text, output_path)
 
+        # Use FFmpeg to extract audio from the original template video
+        audio_file = 'temp_audio.aac'
+        extract_audio_command = f'ffmpeg -i {template_path} -q:a 0 -map a {audio_file}'
+        try:
+            subprocess.run(extract_audio_command, shell=True, check=True)
+
+            # Combine the new video with the extracted audio
+            temp_output_file = 'temp_output_with_audio.mp4'
+            combine_command = f'ffmpeg -i {output_path} -i {audio_file} -c copy -map 0:v:0 -map 1:a:0 {temp_output_file}'
+            subprocess.run(combine_command, shell=True, check=True)
+
+            # Clean up and replace the final output
+            if os.path.exists(output_path):
+                os.remove(output_path)
+            os.rename(temp_output_file, output_path)
+
+            # Remove the temporary audio file
+            os.remove(audio_file)
+
+        except subprocess.CalledProcessError as e:
+            print(f"FFmpeg error: {e}")
