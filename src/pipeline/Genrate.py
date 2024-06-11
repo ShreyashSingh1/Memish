@@ -197,9 +197,9 @@ class MemeGenerator:
                     return template_path, top_text, bottom_text
 
                 except Exception as e:
-                    print(f"An error occurred: {e}")
+                    logging(f"An error occurred: {e}")
                     if retries > 0:
-                        print("Retrying...")
+                        print(f"{retries}. Retrying...")
                     else:
                         print("Retries exhausted, returning None")
                         return None, None, None

@@ -33,6 +33,29 @@ def savenft(path):
 
     return value
 
+def savenft1(path):
+
+    with open(path, "rb") as f:
+        image_data = f.read()
+
+    # Create FormData-like object
+    files = {"file": ("filename.mp4", image_data)}  # Adding the filename here
+
+    # Define headers (without Content-Type)
+    headers = {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRCOWM5Q0UwQmE3NENiRjA4QkJlZjIwNDMzZEUwYjczNzUxNjI4RTgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5ODUwNDQ1NzM3MywibmFtZSI6IkZ1bmRFVEgifQ.JxTH4iRtScscfmb9mvZqhSqF9MKs2b0JJS2yof7hzF4",
+    }
+
+    # Make the request
+    response = requests.post(
+        "https://api.nft.storage/upload", files=files, headers=headers
+    )
+
+    cid = response.json()["value"]["cid"]
+
+    value = f"https://{cid}.ipfs.nftstorage.link/filename.mp4"
+
+    return value
 
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
@@ -43,46 +66,26 @@ template_paths = {
     "arafed_girl_in_a_yellow_bikini_standing_in_front_of_a_pool_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_girl_in_a_yellow_bikini_standing_in_front_of_a_pool_1.jpg",
     "arafed_image_of_a_couple_in_a_car_with_a_woman_in_the_back_seat_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_couple_in_a_car_with_a_woman_in_the_back_seat_1.jpg",
     "arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_1.jpg",
-    "arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_2": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_2.jpg",
-    "arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_3": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_red_jacket_talking_on_a_cell_phone_3.jpg",
     "arafed_image_of_a_man_in_a_suit_and_tie_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_suit_and_tie_1.jpg",
-    "arafed_image_of_a_man_in_a_suit_and_tie_in_the_dark_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_suit_and_tie_in_the_dark_1.jpg",
     "arafed_image_of_a_man_in_a_suit_and_two_other_men_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_suit_and_two_other_men_1.jpg",
-    "arafed_image_of_a_man_in_a_tuxedo_and_bow_tie_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_tuxedo_and_bow_tie_1.jpg",
-    "arafed_image_of_a_man_sitting_on_a_swing_with_a_woman_standing_in_the_background_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_sitting_on_a_swing_with_a_woman_standing_in_the_background_1.jpg",
-    "arafed_image_of_a_man_standing_in_a_yard_next_to_a_woman_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_standing_in_a_yard_next_to_a_woman_1.jpg",
-    "arafed_image_of_a_man_with_a_black_shirt_and_a_black_shirt_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_with_a_black_shirt_and_a_black_shirt_1.jpg",
+    "man_in_a_tuxedo_and_bow_tie_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_in_a_tuxedo_and_bow_tie_1.jpg",
+    "man_sitting_on_a_swing_with_a_woman_standing_in_the_background_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_sitting_on_a_swing_with_a_woman_standing_in_the_background_1.jpg",
+    "man_standing_in_a_yard_next_to_a_woman_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_standing_in_a_yard_next_to_a_woman_1.jpg",
+    "man_with_a_black_shirt_and_a_black_shirt_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_image_of_a_man_with_a_black_shirt_and_a_black_shirt_1.jpg",
     "arafed_man_and_two_women_hugging_each_other_in_a_bathroom_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_and_two_women_hugging_each_other_in_a_bathroom_1.jpg",
-    "arafed_man_and_woman_hugging_each_other_in_a_black_and_white_photo_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_and_woman_hugging_each_other_in_a_black_and_white_photo_1.jpg",
+    "man_and_woman_hugging_each_other_in_a_black_and_white_photo_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_and_woman_hugging_each_other_in_a_black_and_white_photo_1.jpg",
     "arafed_man_holding_a_wallet_and_a_wallet_with_a_wallet_in_it_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_holding_a_wallet_and_a_wallet_with_a_wallet_in_it_1.jpg",
     "arafed_man_in_a_black_and_white_shirt_sitting_in_front_of_a_motorcycle_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_black_and_white_shirt_sitting_in_front_of_a_motorcycle_1.jpg",
     "arafed_man_in_a_black_shirt_and_tie_smiling_in_a_bathroom_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_black_shirt_and_tie_smiling_in_a_bathroom_1.jpg",
     "arafed_man_in_a_red_shirt_is_playing_a_video_game_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_red_shirt_is_playing_a_video_game_1.jpg",
     "arafed_man_in_a_suit_and_tie_holding_a_hat_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_holding_a_hat_1.jpg",
-    "arafed_man_in_a_suit_and_tie_holding_his_head_in_his_hand_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_holding_his_head_in_his_hand_1.jpg",
+    "holding_his_head_in_his_hand_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_holding_his_head_in_his_hand_1.jpg",
     "arafed_man_in_a_suit_and_tie_is_stretching_his_arms_out_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_is_stretching_his_arms_out_1.jpg",
-    "arafed_man_in_a_suit_and_tie_sitting_in_a_chair_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_sitting_in_a_chair_1.jpg",
-    "arafed_man_in_a_suit_and_tie_standing_in_front_of_a_bulletin_board_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_standing_in_front_of_a_bulletin_board_1.jpg",
+    "sitting_in_a_chair_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_sitting_in_a_chair_1.jpg",
+    "standing_in_front_of_a_bulletin_board_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_standing_in_front_of_a_bulletin_board_1.jpg",
     "arafed_man_in_a_suit_and_tie_standing_in_front_of_a_window_with_numbers_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_standing_in_front_of_a_window_with_numbers_1.jpg",
     "arafed_man_in_a_suit_and_tie_standing_on_the_beach_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_and_tie_standing_on_the_beach_1.jpg",
-    "arafed_man_in_a_suit_kneeling_next_to_a_grave_with_a_sign_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_suit_kneeling_next_to_a_grave_with_a_sign_1.jpg",
-    "arafed_man_in_a_tie_smoking_a_cigarette_in_an_office_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_tie_smoking_a_cigarette_in_an_office_1.jpg",
-    "arafed_man_in_a_tie_talking_on_a_cell_phone_in_an_office_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_tie_talking_on_a_cell_phone_in_an_office_1.jpg",
-    "arafed_man_in_a_yellow_jacket_leaning_against_a_tree_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_a_yellow_jacket_leaning_against_a_tree_1.jpg",
-    "arafed_man_in_red_shirt_sitting_in_chair_with_his_hands_on_his_face_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_red_shirt_sitting_in_chair_with_his_hands_on_his_face_1.jpg",
-    "arafed_man_in_red_shirt_standing_on_a_road_with_a_name_tag_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_red_shirt_standing_on_a_road_with_a_name_tag_1.jpg",
-    "arafed_man_in_white_shirt_and_khaki_pants_holding_a_belt_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_white_shirt_and_khaki_pants_holding_a_belt_1.jpg",
-    "arafed_man_in_yellow_jacket_leaning_against_a_tree_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_in_yellow_jacket_leaning_against_a_tree_1.jpg",
-    "arafed_man_pointing_at_a_can_of_soda_with_a_cigarette_in_his_hand_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_pointing_at_a_can_of_soda_with_a_cigarette_in_his_hand_1.jpg",
-    "arafed_man_pointing_at_something_with_his_right_hand_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_pointing_at_something_with_his_right_hand_1.jpg",
-    "arafed_man_sitting_at_a_table_with_a_sign_on_it_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_sitting_at_a_table_with_a_sign_on_it_1.jpg",
-    "arafed_man_sitting_on_a_bench_talking_on_a_cell_phone_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_sitting_on_a_bench_talking_on_a_cell_phone_1.jpg",
-    "arafed_man_sitting_on_a_chair_talking_to_a_man_with_a_bloody_face_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_sitting_on_a_chair_talking_to_a_man_with_a_bloody_face_1.jpg",
-    "arafed_man_sitting_on_a_red_chair_with_his_hands_up_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_sitting_on_a_red_chair_with_his_hands_up_1.jpg",
-    "arafed_man_talking_on_a_cell_phone_while_holding_a_microphone_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_talking_on_a_cell_phone_while_holding_a_microphone_1.jpg",
-    "arafed_man_with_arms_raised_in_the_air_in_front_of_a_sunset_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_arms_raised_in_the_air_in_front_of_a_sunset_1.jpg",
-    "arafed_man_with_a_beard_and_a_smile_on_his_face_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_a_beard_and_a_smile_on_his_face_1.jpg",
-    "arafed_man_with_a_beard_and_a_white_beard_holding_his_hands_up_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_a_beard_and_a_white_beard_holding_his_hands_up_1.jpg",
+
     "arafed_man_with_a_beard_and_a_white_beard_holding_his_hands_up_2": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_a_beard_and_a_white_beard_holding_his_hands_up_2.jpg",
     "arafed_man_with_a_black_shirt_and_a_black_sweater_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_a_black_shirt_and_a_black_sweater_1.jpg",
     "arafed_man_with_a_black_shirt_and_a_black_sweater_2": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/arafed_man_with_a_black_shirt_and_a_black_sweater_2.jpg",
