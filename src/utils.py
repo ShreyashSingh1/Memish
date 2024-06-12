@@ -34,12 +34,11 @@ def savenft(path):
     return value
 
 def savenft1(path):
-
     with open(path, "rb") as f:
-        image_data = f.read()
+        file_data = f.read()
 
     # Create FormData-like object
-    files = {"file": ("filename.mp4", image_data)}  # Adding the filename here
+    files = {"file": ("filename.mp4", file_data, "video/mp4")}
 
     # Define headers (without Content-Type)
     headers = {
@@ -51,11 +50,13 @@ def savenft1(path):
         "https://api.nft.storage/upload", files=files, headers=headers
     )
 
-    cid = response.json()["value"]["cid"]
-
-    value = f"https://{cid}.ipfs.nftstorage.link/filename.mp4"
-
-    return value
+    # Check if the request was successful
+    if response.status_code == 200:
+        cid = response.json()["value"]["cid"]
+        value = f"https://{cid}.ipfs.nftstorage.link/filename.mp4"
+        return value
+    else:
+        response.raise_for_status()
 
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",

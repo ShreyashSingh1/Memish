@@ -78,11 +78,12 @@ def video():
         "guy_is_dancing_three_person_are_laughing": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/laal_kabutar_meme_cat_is_dancing_three_cockroach_are_laughing_Oggy_and_cockroach.mp4",
         "modi_saying_kya_re_bete_tujhe_thakan_nhi_lag_rahi_kya": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/modi_saying_kya_re_bete_tujhe_thakan_nhi_lag_rahi_kya.mp4",
         "two_kids_are_running_after_seeing_something": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/two_kids_are_running_after_seeing_something.mp4",
-        "one_eternity_later":"C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/one_eternity_later.mp4"
+        "one_eternity_later":"C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/one_eternity_later.mp4",
+        "man_shocked_after_seeing_something": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/guy_shocked_as_hell.mp4",
+        "man_shocked_after_listening_something": "C:/Users/shrey/OneDrive/Desktop/Memish/Vedio_Templates/man_shocked_after_seeeing_something.mp4"
     }
     meme_gen1 = VedioGenerator("AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk", template_paths)
-    output_path = "output_video.mp4"
-    meme_gen1.create_video_meme(data["prompt"], output_path)
+    meme_gen1.create_video_meme(data["prompt"], "output_video.mp4")
     
     link = utils.savenft1("output_video.mp4")
 
