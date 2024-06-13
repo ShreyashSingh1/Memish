@@ -171,7 +171,7 @@ class MemeGenerator:
 
         import time
 
-    def analyze_prompt(self, prompt, retries=5):
+    def analyze_prompt(self, prompt, retries=8):
             for _ in range(retries):
                 try:
                     data = (f"Based on the prompt: '{prompt}', which meme template would be most suitable from the following options: "
