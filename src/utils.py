@@ -7,7 +7,8 @@ GEN_KEY = "AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk"
 current_directory = os.getcwd()
 INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")
 OUTPUT = os.path.join(current_directory, "artifacts", "output.jpg")
-
+OUTPUT_VEDIO = os.path.join(current_directory, "artifacts", "output_video.mp4")
+OUTPUT_MEME = os.path.join(current_directory, "artifacts", "output_meme.jpg")
 
 def savenft(path):
 

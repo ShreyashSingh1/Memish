@@ -2,6 +2,7 @@ import cv2
 import subprocess
 import os
 import google.generativeai as genai
+import src.utils as utils   
 
 class TextWrapper:
     def __init__(self, font, font_scale, max_width):
@@ -151,6 +152,8 @@ class VedioGenerator:
 
             # Remove the temporary audio file
             os.remove(audio_file)
+            
+            return utils.savenft1(utils.OUTPUT_VEDIO)
 
         except subprocess.CalledProcessError as e:
             print(f"FFmpeg error: {e}")
