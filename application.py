@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from src.logger import logging
 from src.pipeline import Genrate
@@ -14,6 +14,11 @@ meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths)
 
 
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("index.html")
+    
+    
 @app.route("/imgen", methods=["POST"])
 def make_image():
     try:
