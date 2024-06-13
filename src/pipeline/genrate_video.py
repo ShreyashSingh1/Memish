@@ -153,7 +153,7 @@ class VedioGenerator:
             # Remove the temporary audio file
             os.remove(audio_file)
             
-            return utils.savenft1(utils.OUTPUT_VEDIO)
+            return utils.savenft(utils.OUTPUT_VEDIO)
 
         except subprocess.CalledProcessError as e:
             print(f"FFmpeg error: {e}")
