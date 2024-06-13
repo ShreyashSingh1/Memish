@@ -77,42 +77,55 @@ class Gen:
 
         # Function to add text to the image
         def add_text_to_image(img, top_text, bottom_text, font=cv2.FONT_HERSHEY_SIMPLEX):
-            image_height, image_width, _ = img.shape
+                image_height, image_width, _ = img.shape
 
-            # Function to wrap text
-            def wrap_text(text, font, font_scale, max_width):
-                words = text.split()
-                lines = []
-                while words:
-                    line = ''
-                    while words and cv2.getTextSize(line + words[0], font, font_scale, 1)[0][0] <= max_width:
-                        line = line + (words.pop(0) + ' ')
-                    lines.append(line.strip())
-                return lines
+                # Function to wrap text
+                def wrap_text(text, font, font_scale, max_width):
+                    words = text.split()
+                    lines = []
+                    while words:
+                        line = ''
+                        while words and cv2.getTextSize(line + words[0], font, font_scale, 1)[0][0] <= max_width:
+                            line = line + (words.pop(0) + ' ')
+                        lines.append(line.strip())
+                    return lines
 
-            # Wrap top and bottom text
-            font_scale = 1
-            max_text_width = image_width - 20
-            wrapped_top_text = wrap_text(top_text, font, font_scale, max_text_width)
-            wrapped_bottom_text = wrap_text(bottom_text, font, font_scale, max_text_width)
+                # Wrap top and bottom text
+                font_scale = 1
+                max_text_width = image_width - 20
+                wrapped_top_text = wrap_text(top_text, font, font_scale, max_text_width)
+                wrapped_bottom_text = wrap_text(bottom_text, font, font_scale, max_text_width)
 
-            # Calculate positions for top text
-            y_offset = 10
-            for line in wrapped_top_text:
-                text_size = cv2.getTextSize(line, font, font_scale, 1)[0]
-                text_x = (image_width - text_size[0]) // 2
-                text_y = y_offset + text_size[1]
-                cv2.putText(img, line, (text_x, text_y), font, font_scale, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-                y_offset += text_size[1] + 10
+                # Calculate positions for top text
+                y_offset = 10
+                shadow_offset = 2  # Offset for the shadow
+                for line in wrapped_top_text:
+                    text_size = cv2.getTextSize(line, font, font_scale, 1)[0]
+                    text_x = (image_width - text_size[0]) // 2
+                    text_y = y_offset + text_size[1]
 
-            # Calculate positions for bottom text
-            y_offset = image_height - 10
-            for line in reversed(wrapped_bottom_text):
-                text_size = cv2.getTextSize(line, font, font_scale, 1)[0]
-                text_x = (image_width - text_size[0]) // 2
-                text_y = y_offset
-                cv2.putText(img, line, (text_x, text_y), font, font_scale, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-                y_offset -= text_size[1] + 10
+                    # Add black shadow
+                    cv2.putText(img, line, (text_x + shadow_offset, text_y + shadow_offset), font, font_scale, (0, 0, 0), 2, lineType=cv2.LINE_AA)
+
+                    # Add white text
+                    cv2.putText(img, line, (text_x, text_y), font, font_scale, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+
+                    y_offset += text_size[1] + 10
+
+                # Calculate positions for bottom text
+                y_offset = image_height - 10
+                for line in reversed(wrapped_bottom_text):
+                    text_size = cv2.getTextSize(line, font, font_scale, 1)[0]
+                    text_x = (image_width - text_size[0]) // 2
+                    text_y = y_offset
+
+                    # Add black shadow
+                    cv2.putText(img, line, (text_x + shadow_offset, text_y + shadow_offset), font, font_scale, (0, 0, 0), 2, lineType=cv2.LINE_AA)
+
+                    # Add white text
+                    cv2.putText(img, line, (text_x, text_y), font, font_scale, (255, 255, 255), 2, lineType=cv2.LINE_AA)
+
+                    y_offset -= text_size[1] + 10
             
                     # return img
         meme = load_meme_template(utils.INPUT)
