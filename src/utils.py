@@ -1,6 +1,8 @@
 import requests
 import os
 
+working_dir = os.getcwd()
+
 # GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
 GEN_KEY = "AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk"
 
@@ -62,11 +64,6 @@ def savenft1(path):
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
 }
-
-import os
-
-# Get the current working directory
-working_dir = os.getcwd()
 
 # Template paths dictionary with dynamic paths based on the working directory
 template_video_paths = {
