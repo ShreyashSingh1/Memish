@@ -249,8 +249,8 @@ class MemeGenerator:
             y_offset -= text_size[1] + 10
         
         cv2.imwrite(utils.OUTPUT_MEME, img)
-        link = utils.savenft(utils.OUTPUT_MEME)
-        return link
+        
+        return utils.savenft(utils.OUTPUT_MEME)
 
     def create_meme(self, prompt):
         template_path, top_text, bottom_text = self.analyze_prompt(prompt)

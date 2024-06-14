@@ -14,6 +14,7 @@ INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")
 OUTPUT = os.path.join(current_directory, "artifacts", "output.jpg")
 OUTPUT_VEDIO = os.path.join(current_directory, "artifacts", "output_video.mp4")
 OUTPUT_MEME = os.path.join(current_directory, "artifacts", "output_meme.jpg")
+UPLOAD = os.path.join(current_directory, "artifacts", "upload.jpg")
 
 
 publitio_api = PublitioAPI(key=api_key , secret=api_secret)
@@ -23,7 +24,7 @@ def savenft(path):
                          title='My title',
                          description='My description')
         
-    return data['url_preview']
+    return data['url_preview'], data['url_download']
 
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
