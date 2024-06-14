@@ -83,6 +83,7 @@ def create_video_meme():
         logging.error(f"Error generating video meme: {e}")
         return jsonify({"error": "Error generating video meme"}), 500
     
+    
 @app.route("/uploadimage", methods=["POST"])
 def upload_image():
     try:
