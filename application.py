@@ -3,6 +3,7 @@ from flask_cors import CORS
 from src.logger import logging
 from src.pipeline import Genrate
 import src.utils as utils
+from pathlib import Path
 from src.pipeline.genrate_video import VedioGenerator
 
 app = Flask(__name__)
@@ -88,9 +89,10 @@ def create_video_meme():
 def upload_image():
     try:
         image = request.files["image"]
-        image.save(utils.UPLOAD)
+        file_extension = Path(image.filename).suffix
+        image.save(utils.UPLOAD + "\\" + f"upload{file_extension}")
         logging.info("Generating custom image meme!")
-        link_preview, link_download = utils.savenft(utils.UPLOAD)
+        link_preview, link_download = utils.savenft(utils.UPLOAD + "\\" + f"upload{file_extension}")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error uploading image: {e}")

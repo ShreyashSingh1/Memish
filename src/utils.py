@@ -14,7 +14,7 @@ INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")
 OUTPUT = os.path.join(current_directory, "artifacts", "output.jpg")
 OUTPUT_VEDIO = os.path.join(current_directory, "artifacts", "output_video.mp4")
 OUTPUT_MEME = os.path.join(current_directory, "artifacts", "output_meme.jpg")
-UPLOAD = os.path.join(current_directory, "artifacts", "upload.jpg")
+UPLOAD = os.path.join(current_directory, "artifacts")
 FONT = os.path.join(current_directory, "artifacts", "impact.ttf")
 
 
