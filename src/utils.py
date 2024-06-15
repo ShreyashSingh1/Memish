@@ -4,8 +4,8 @@ import os
 
 working_dir = os.getcwd()
 
-# GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
-GEN_KEY = "AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk"
+GEN_KEY = "AIzaSyCEDJ1aaSEGimwoSgF-bSNY2PP4i-j4_Kc"
+# GEN_KEY = "AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk"
 api_key = 'jP6avoTuQW3LhlQN6fkR'
 api_secret = 'zQz5nJtbbNLJliVe5gLq8zVwfiRQvBLB'
 
@@ -15,6 +15,7 @@ OUTPUT = os.path.join(current_directory, "artifacts", "output.jpg")
 OUTPUT_VEDIO = os.path.join(current_directory, "artifacts", "output_video.mp4")
 OUTPUT_MEME = os.path.join(current_directory, "artifacts", "output_meme.jpg")
 UPLOAD = os.path.join(current_directory, "artifacts", "upload.jpg")
+FONT = os.path.join(current_directory, "artifacts", "impact.ttf")
 
 
 publitio_api = PublitioAPI(key=api_key , secret=api_secret)

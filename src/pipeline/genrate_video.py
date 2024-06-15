@@ -2,12 +2,13 @@ import cv2
 import subprocess
 import os
 import google.generativeai as genai
-import src.utils as utils   
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+import src.utils as utils
 
 class TextWrapper:
-    def __init__(self, font, font_scale, max_width):
+    def __init__(self, font, max_width):
         self.font = font
-        self.font_scale = font_scale
         self.max_width = max_width
 
     def wrap_text(self, text):
@@ -15,15 +16,16 @@ class TextWrapper:
         lines = []
         while words:
             line = ''
-            while words and cv2.getTextSize(line + words[0], self.font, self.font_scale, 1)[0][0] <= self.max_width:
+            while words and ImageDraw.Draw(Image.new("RGB", (1, 1))).textbbox((0, 0), line + words[0], font=self.font)[2] <= self.max_width:
                 line = line + (words.pop(0) + ' ')
             lines.append(line.strip())
         return lines
 
 class VedioGenerator:
-    def __init__(self, api_key, template_paths):
+    def __init__(self, api_key, template_paths, font_path):
         self.template_paths = template_paths
-        self.font = cv2.FONT_HERSHEY_SIMPLEX
+        self.font_path = font_path
+        self.font = ImageFont.truetype(font_path, 40)  # Adjust the font size as needed
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
 
@@ -84,13 +86,9 @@ class VedioGenerator:
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        wrapper = TextWrapper(self.font, 1, frame_width - 20)
+        wrapper = TextWrapper(self.font, frame_width - 20)
         wrapped_top_text = wrapper.wrap_text(top_text)
         wrapped_bottom_text = wrapper.wrap_text(bottom_text)
-
-        # Define shadow parameters
-        shadow_offset = 2
-        shadow_color = (0, 0, 0)  # Black shadow color
 
         for frame_num in range(frame_count):
             ret, frame = cap.read()
@@ -98,32 +96,31 @@ class VedioGenerator:
                 break
             if out is None:
                 out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-            image_height, image_width, _ = frame.shape
 
-            # Calculate positions for top text
+            # Convert frame to PIL image
+            pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            draw = ImageDraw.Draw(pil_image)
+
+            # Calculate positions and draw top text
             y_offset = 10
             for line in wrapped_top_text:
-                text_size = cv2.getTextSize(line, self.font, 1, 1)[0]
-                text_x = (image_width - text_size[0]) // 2
-                text_y = y_offset + text_size[1]
-                # Draw shadow first
-                cv2.putText(frame, line, (text_x + shadow_offset, text_y + shadow_offset), self.font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
-                # Then draw text
-                cv2.putText(frame, line, (text_x, text_y), self.font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-                y_offset += text_size[1] + 10
-
-            # Calculate positions for bottom text
-            y_offset = image_height - 10
-            for line in reversed(wrapped_bottom_text):
-                text_size = cv2.getTextSize(line, self.font, 1, 1)[0]
-                text_x = (image_width - text_size[0]) // 2
+                text_size = draw.textbbox((0, 0), line, font=self.font)
+                text_x = (frame_width - text_size[2]) // 2
                 text_y = y_offset
-                # Draw shadow first
-                cv2.putText(frame, line, (text_x + shadow_offset, text_y - shadow_offset), self.font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
-                # Then draw text
-                cv2.putText(frame, line, (text_x, text_y), self.font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-                y_offset -= text_size[1] + 10
+                draw.text((text_x, text_y), line, font=self.font, fill="white", stroke_width=2, stroke_fill="black")
+                y_offset += text_size[3] + 10
 
+            # Calculate positions and draw bottom text
+            y_offset = frame_height - 50  # Adjust based on font size
+            for line in reversed(wrapped_bottom_text):
+                text_size = draw.textbbox((0, 0), line, font=self.font)
+                text_x = (frame_width - text_size[2]) // 2
+                text_y = y_offset - text_size[3]
+                draw.text((text_x, text_y), line, font=self.font, fill="white", stroke_width=2, stroke_fill="black")
+                y_offset -= text_size[3] + 10
+
+            # Convert back to OpenCV frame
+            frame = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
             out.write(frame)
 
         cap.release()
@@ -152,8 +149,10 @@ class VedioGenerator:
 
             # Remove the temporary audio file
             os.remove(audio_file)
+            # os.remove('temp_output_with_audio.mp4')
             
             return utils.savenft(utils.OUTPUT_VEDIO)
 
         except subprocess.CalledProcessError as e:
             print(f"FFmpeg error: {e}")
+

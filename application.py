@@ -11,7 +11,7 @@ CORS(app)
 # Initialize the generators
 draw = Genrate.Gen()
 meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
-meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths)
+meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths, utils.FONT)
 
 
 @app.route("/", methods=["GET"])
