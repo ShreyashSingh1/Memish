@@ -33,7 +33,6 @@ template_paths = {
 
 # Template paths dictionary with dynamic paths based on the working directory
 template_video_paths = {
-    "guy_is_dancing_three_person_are_laughing": os.path.join(working_dir, "video_templates/m1.mp4"),
     "modi_saying_kya_re_bete_tujhe_thakan_nhi_lag_rahi_kya": os.path.join(working_dir, "video_templates/m2.mp4"),
     "two_kids_are_running_after_seeing_something": os.path.join(working_dir, "video_templates/m3.mp4"),
     "man_shocked_after_seeing_something": os.path.join(working_dir, "video_templates/m4.mp4"),
@@ -44,9 +43,10 @@ template_video_paths = {
     "guy_loosing_his_mental_stability": os.path.join(working_dir, "video_templates/m9.mp4"),
     "aaj_mood_nhi_hai_insta_srcoll_kar_leta_hu": os.path.join(working_dir, "video_templates/m10.mp4"),
     "guys_telling_stop_it_band_karo_i_request": os.path.join(working_dir, "video_templates/m11.mp4"),
-    "guy_is_teling_tumse_nhi_ho_payega": os.path.join(working_dir, "video_templates/m12.mp4"),
+    "guy_is_telling_tumse_nhi_ho_payega": os.path.join(working_dir, "video_templates/m12.mp4"),
     "cat_dancing_on_chipi_chipi_chappa_song": os.path.join(working_dir, "video_templates/m13.mp4"),
     "dedh_sau_rupyee_dega": os.path.join(working_dir, "video_templates/m14.mp4"),
+    "guy_is_dancing_on_beelarina_dress_three_person_are_lauging": os.path.join(working_dir, "video_templates/m1.mp4"),
     "guy_telling_bhai_mere_saath_kya_horaha_hai_he_is_confused_what_is_happing_with_him": os.path.join(working_dir, "video_templates/m15.mp4"),
     "two_guys_are_shouthing_bhaut_jaga_hai_nhi_jaga_hai": os.path.join(working_dir, "video_templates/m16.mp4"),
     "harsh_beniwal_saying_samjh_rahe_ho_na_aap_meme": os.path.join(working_dir, "video_templates/m17.mp4"),
@@ -57,6 +57,13 @@ template_video_paths = {
     "guys_walking_in_attitude_hero_entry_in_south_moive": os.path.join(working_dir, "video_templates/m22.mp4"),
     "guys_is_saying_mujhe_chakka_ane_lage_hai": os.path.join(working_dir, "video_templates/m23.mp4"),
     "kitne_tejashvi_log_hai_modi_speaking": os.path.join(working_dir, "video_templates/m24.mp4"),
-    "guy_getting_slaaped_in_differnt_time_lapps": os.path.join(working_dir, "video_templates/m25.mp4"),
-    "guys_with_his_fav_girl": os.path.join(working_dir, "video_templates/m26.mp4")
+    "father_when_i_do_something_wrong": os.path.join(working_dir, "video_templates/m25.mp4"),
+    "modi_with_meloni_guy_with_its_fav_women_meme": os.path.join(working_dir, "video_templates/m26.mp4"),
+    "me_after_seeing_chingari_villa_very_happy": os.path.join(working_dir, "video_templates/m5.mp4"),
+    "me_after_implementing_personilzed_meme_very_happy": os.path.join(working_dir, "video_templates/m5.mp4"),
+    "me_after_seeing_crypto_portfolio_loss_ye_kya_horaha_sad": os.path.join(working_dir, "video_templates/m15.mp4"),
+    "my_mind_after_24_hrs_hackathon": os.path.join(working_dir, "video_templates/m20.mp4"),
+    "after_seeing_coffee_machine_in_hackathon_happy"  : os.path.join(working_dir, "video_templates/m13.mp4"),
+    "inviligilator_after_evey_10_min_insta_scroll_kar_leta_hu": os.path.join(working_dir, "video_templates/m10.mp4"),
+    "my_mind_before_every_exam_insta_scroll": os.path.join(working_dir, "video_templates/m10.mp4"),
 }
