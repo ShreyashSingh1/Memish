@@ -1,7 +1,7 @@
 import requests
-import google.generativeai as genai  # Assuming this is your library import
-from src.logger import logging  # Assuming this is your logger import
-import src.utils as utils  # Assuming this is your utility module
+import google.generativeai as genai  
+from src.logger import logging  
+import src.utils as utils  
 
 def understand(prompt, animate=False, normal=False, photo=False):
     try:
@@ -34,6 +34,7 @@ def understand(prompt, animate=False, normal=False, photo=False):
         if normal or animate:
             prompt_text = f"Based on the prompt: '{prompt}', generate suitable image description top and bottom text for the image meme. Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible."
             image_des, top_t, bottom_t = generate_caption(prompt_text)
+            
         elif photo:
             API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
             headers = {"Authorization": "Bearer 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"}
@@ -49,7 +50,7 @@ def understand(prompt, animate=False, normal=False, photo=False):
                             return response.json()
                     except Exception as e:
                         logging.error(f"Error querying API: {str(e)}")
-                        pass  # Retry on exception
+                        pass  
 
                 raise Exception(f"Failed to query API after {max_attempts} attempts.")
 

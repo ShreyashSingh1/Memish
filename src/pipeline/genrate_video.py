@@ -25,7 +25,7 @@ class VedioGenerator:
     def __init__(self, api_key, template_paths, font_path):
         self.template_paths = template_paths
         self.font_path = font_path
-        self.font = ImageFont.truetype(font_path, 30)  # Adjust the font size as needed
+        self.font = ImageFont.truetype(font_path, 30)  
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
 
