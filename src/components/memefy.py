@@ -35,6 +35,8 @@ def understand(prompt, animate=False, normal=False, photo=False):
             prompt_text = f"Based on the prompt: '{prompt}', generate suitable image description top and bottom text for the image meme. Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible."
             image_des, top_t, bottom_t = generate_caption(prompt_text)
             
+            return image_des, top_t, bottom_t
+            
         elif photo:
             API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
             headers = {"Authorization": "Bearer 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"}
@@ -68,17 +70,14 @@ def understand(prompt, animate=False, normal=False, photo=False):
                 top_text_photo = top_text_photo.replace("**top_text:**", "")
                 bottom_text_photo = response_text[1] if len(response_text) > 1 else ""
                 bottom_text_photo = str(bottom_text_photo).replace("**bottom_text:**", "").replace("**Bottom text:**", "").replace("\\", "")
-                
+                # print(response_text)
                 return top_text_photo, bottom_text_photo
                 
                 
             except Exception as query_exception:
                 logging.error(f"Failed to query API: {str(query_exception)}")
                 return "Error: Failed to query API"
-            
-            
-        return image_des, top_t, bottom_t
-            
+        
 
 
     except Exception as e:
