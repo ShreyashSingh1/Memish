@@ -37,9 +37,11 @@ def make_image():
 def upload_photo():
     try:
         image = request.files["image"]
+        data = request.form["prompt"]
+        print(data)
         image.save(utils.INPUT)
         logging.info("Generating custom image meme!")
-        link_preview, link_download = draw.drawimage(top_text=" ", bottom_text=" ", photo=True)
+        link_preview, link_download = draw.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
         logging.info("Custom image meme generation successful!")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:

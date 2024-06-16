@@ -56,9 +56,9 @@ class Gen:
             logging.error("Error while generating image: " + str(e))
             return "Error while generating meme!, please try again."
 
-    def drawimage(self, top_text, bottom_text, photo=False, normal=False):
+    def drawimage(self, top_text, bottom_text, photo=False, normal=False, prompt=" "):
         if photo:
-            top_text, bottom_text = understand(prompt="", photo=True)
+            top_text, bottom_text = understand(prompt=prompt, photo=True)
 
         def load_meme_template(template_path):
             img = cv2.imread(template_path)
@@ -66,7 +66,7 @@ class Gen:
                 raise FileNotFoundError(f"Image not found at {template_path}")
             return img
 
-        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=40):
+        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=45):
             image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             draw = ImageDraw.Draw(image_pil)
             font = ImageFont.truetype(font_path, font_size)

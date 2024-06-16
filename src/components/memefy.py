@@ -58,22 +58,27 @@ def understand(prompt, animate=False, normal=False, photo=False):
 
             try:
                 output = query_api(utils.INPUT)
-                data = f"Based on the image description '{output[0]['generated_text']}', generate suitable toop  and bottom text for the image meme. Make sure the answer includes the key name as **top_text**, **bottom_text:** key should same as given above and is as funny as possible."
+                data = f"Based on the image description from model'{output[0]['generated_text']}, and by user {prompt}', generate suitable toop  and bottom text for the image meme. Make sure the answer includes the key name as **top_text**, **bottom_text:** key should same as given above and is as funny as possible."
+                max_attempts = 8
+                for _ in range(max_attempts):
+                    try:
+                        response = model.generate_content(data)
+                            
+                        response_text = response.text.strip().split('\n')
+                        response_text = [item for item in response_text if item]
 
-                response = model.generate_content(data)
+                        # image_description = response_text[0].replace("**image_description:**", "").strip().lower()
+                        top_text_photo = response_text[0] if len(response_text) > 1 else ""
+                        top_text_photo = top_text_photo.replace("**top_text:**", "")
+                        bottom_text_photo = response_text[1] if len(response_text) > 1 else ""
+                        bottom_text_photo = str(bottom_text_photo).replace("**bottom_text:**", "").replace("**Bottom text:**", "").replace("\\", "")
+                        # print(response_text)
+                        return top_text_photo, bottom_text_photo
                     
-                response_text = response.text.strip().split('\n')
-                response_text = [item for item in response_text if item]
-
-                # image_description = response_text[0].replace("**image_description:**", "").strip().lower()
-                top_text_photo = response_text[0] if len(response_text) > 1 else ""
-                top_text_photo = top_text_photo.replace("**top_text:**", "")
-                bottom_text_photo = response_text[1] if len(response_text) > 1 else ""
-                bottom_text_photo = str(bottom_text_photo).replace("**bottom_text:**", "").replace("**Bottom text:**", "").replace("\\", "")
-                # print(response_text)
-                return top_text_photo, bottom_text_photo
-                
-                
+                    except Exception as e:
+                        logging.error(f"Error querying API: {str(e)}")
+                        pass        
+                                  
             except Exception as query_exception:
                 logging.error(f"Failed to query API: {str(query_exception)}")
                 return "Error: Failed to query API"
