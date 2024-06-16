@@ -11,6 +11,7 @@ CORS(app)
 
 # Initialize the generators
 draw = Genrate.Gen()
+draw1 = Genrate.GenPhoto()
 meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths, utils.FONT)
 
@@ -24,9 +25,9 @@ def home():
 def make_image():
     try:
         data = request.json
-        toptext, bottomtext = draw.genimg(data["prompt"], normal=True)
+        toptext, bottomtext = draw1.genimg(data["prompt"], normal=True)
         logging.info("Image generated successfully!")
-        link_preview, link_download = draw.drawimage(toptext, bottomtext, normal=True)
+        link_preview, link_download = draw1.drawimage(toptext, bottomtext, normal=True)
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating image: {e}")
@@ -40,6 +41,7 @@ def upload_photo():
         data = request.form["prompt"]
         print(data)
         image.save(utils.INPUT)
+        # utils.resize_image()
         logging.info("Generating custom image meme!")
         link_preview, link_download = draw.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
         logging.info("Custom image meme generation successful!")
@@ -53,9 +55,9 @@ def upload_photo():
 def generate_anime_image():
     try:
         data = request.json
-        top_text, bottom_text = draw.genimg(data["prompt"], animate=True)
+        top_text, bottom_text = draw1.genimg(data["prompt"], animate=True)
         logging.info("Anime image generated successfully!")
-        link_preview, link_download = draw.drawimage(top_text, bottom_text)
+        link_preview, link_download = draw1.drawimage(top_text, bottom_text)
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating anime image: {e}")

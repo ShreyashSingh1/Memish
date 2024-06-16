@@ -69,9 +69,9 @@ def understand(prompt, animate=False, normal=False, photo=False):
 
                         # image_description = response_text[0].replace("**image_description:**", "").strip().lower()
                         top_text_photo = response_text[0] if len(response_text) > 1 else ""
-                        top_text_photo = top_text_photo.replace("**top_text:**", "")
+                        top_text_photo = top_text_photo.replace("**top_text:**", "").replace("**top_text**:", "")
                         bottom_text_photo = response_text[1] if len(response_text) > 1 else ""
-                        bottom_text_photo = str(bottom_text_photo).replace("**bottom_text:**", "").replace("**Bottom text:**", "").replace("\\", "")
+                        bottom_text_photo = str(bottom_text_photo).replace("**bottom_text:**", "").replace("**Bottom text:**", "").replace("\\", "").replace("**bottom_text**:", "")
                         # print(response_text)
                         return top_text_photo, bottom_text_photo
                     

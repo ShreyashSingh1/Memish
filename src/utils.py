@@ -1,4 +1,4 @@
-import requests
+import cv2
 from publitio import PublitioAPI
 import os
 
@@ -67,3 +67,30 @@ template_video_paths = {
     "inviligilator_after_evey_10_min_insta_scroll_kar_leta_hu": os.path.join(working_dir, "video_templates/m10.mp4"),
     "my_mind_before_every_exam_insta_scroll": os.path.join(working_dir, "video_templates/m10.mp4"),
 }
+
+
+
+def resize_image():
+    # Read the image from the file
+    input_image_path = INPUT
+    output_image_path = INPUT
+    scale_factor = 0.7
+    img = cv2.imread(input_image_path)
+    
+    # Get original dimensions
+    height, width = img.shape[:2]
+    print(f"Original size: {width}x{height}")
+    
+    # Calculate new dimensions
+    new_width = int(width * scale_factor)
+    new_height = int(height * scale_factor)
+    print(f"Resized to: {new_width}x{new_height}")
+    
+    # Resize the image
+    resized_img = cv2.resize(img, (new_width, new_height), interpolation = cv2.INTER_AREA)
+    
+    # Save the resized image
+    cv2.imwrite(output_image_path, resized_img)
+    
+    return "Resized image saved successfully!"
+
