@@ -42,10 +42,10 @@ class VedioGenerator:
 
                 template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
                 top_text = response_text[1] if len(response_text) > 1 else ""
-                top_text = top_text.replace("**Top text:**", "").replace("**Top text**:", "").replace("**Top Text**:", "").replace("**top_text:**", "")
+                top_text = top_text.replace("**Top text:**", "").replace("**Top text**:", "").replace("**Top Text**:", "").replace("**top_text:**", "").replace("**top_text**:", "")
 
                 bottom_text = response_text[2] if len(response_text) > 2 else ""
-                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").replace("**bottom_text:**", "")
+                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").replace("**bottom_text:**", "").replace("**bottom_text**:", "")
 
                 template_choice = self.clean_template_choice(template_choice)
                 template_path = self.template_paths.get(template_choice, self.template_paths[template_choice])
