@@ -59,7 +59,6 @@ template_video_paths = {
     "kitne_tejashvi_log_hai_modi_speaking": os.path.join(working_dir, "video_templates/m24.mp4"),
     "father_when_i_do_something_wrong": os.path.join(working_dir, "video_templates/m25.mp4"),
     "modi_with_meloni_guy_with_its_fav_women_meme": os.path.join(working_dir, "video_templates/m26.mp4"),
-    "me_after_seeing_chingari_villa_very_happy": os.path.join(working_dir, "video_templates/m5.mp4"),
     "me_after_implementing_personilzed_meme_very_happy": os.path.join(working_dir, "video_templates/m5.mp4"),
     "me_after_seeing_crypto_portfolio_loss_ye_kya_horaha_sad": os.path.join(working_dir, "video_templates/m15.mp4"),
     "my_mind_after_24_hrs_hackathon": os.path.join(working_dir, "video_templates/m20.mp4"),
