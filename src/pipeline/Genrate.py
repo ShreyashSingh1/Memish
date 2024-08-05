@@ -66,7 +66,7 @@ class Gen:
                 raise FileNotFoundError(f"Image not found at {template_path}")
             return img
 
-        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=160):
+        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=142):
             image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             draw = ImageDraw.Draw(image_pil)
             font = ImageFont.truetype(font_path, font_size)

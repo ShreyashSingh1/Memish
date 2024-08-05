@@ -21,11 +21,28 @@ FONT = os.path.join(current_directory, "artifacts", "impact.ttf")
 publitio_api = PublitioAPI(key=api_key , secret=api_secret)
 
 def savenft(path):
-    data = publitio_api.create_file(file=open(path, 'rb'),
-                         title='My title',
-                         description='My description')
-        
-    return data['url_preview'], data['url_download']
+    
+    from imgurpython import ImgurClient
+
+    # Replace these with your Imgur client ID and secret
+    client_id = '7f25a5359417cee'
+    client_secret = '7f25a5359417cee'
+
+    # Create an ImgurClient instance
+    client = ImgurClient(client_id, client_secret)
+
+    # Upload the image
+    response = client.upload_from_path(path, anon=True)
+
+    # Get the link to the uploaded image
+    image_link = response['link']
+    
+    # print(f"Image uploaded successfully. Link: {image_link}")
+    #     data = publitio_api.create_file(file=open(path, 'rb'),
+    #                         title='My title',
+    #                         description='My description')
+            
+    return image_link, 'url_download'
 
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
