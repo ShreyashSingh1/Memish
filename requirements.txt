@@ -4,5 +4,5 @@ flask-cors
 matplotlib
 gunicorn
 opencv-python
-publitio
+imgurpython
 numpy
