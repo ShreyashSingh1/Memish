@@ -42,7 +42,7 @@ def savenft(path):
     #                         title='My title',
     #                         description='My description')
             
-    return image_link, 'url_download'
+    return image_link, image_link
 
 template_paths = {
     "aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1": "c:/Users/shrey/OneDrive/Desktop/Memish/notebooks/Templates/aerial_view_of_a_car_driving_down_a_road_in_the_middle_of_a_forest_1.jpg",
