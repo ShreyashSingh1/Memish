@@ -85,12 +85,12 @@ def generate_anime_image():
 def create_template_meme():
     try:
         data = request.json
-        link_preview, link_download = meme_generator.create_meme(data["prompt"])
+        link_preview, link_download = meme_generator.create_meme(data["prompt"], utils.FONT, 120)
         logging.info("Template meme generated successfully!")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
-        logging.error(f"Error creating template meme: {e}")
-        return jsonify({"error": "Error creating template meme"}), 500
+        logging.error(f"Error generating meme: {e}")
+        return jsonify({"error": "Error generating anime image"}), 500
 
 
 @app.route("/video", methods=["POST"])

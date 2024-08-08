@@ -236,6 +236,14 @@ class GenPhoto:
         return savenft(utils.OUTPUT)
 
 
+import cv2
+import logging
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+
+# Configure logging
+logging.basicConfig(level=logging.ERROR)
+
 class TextWrapper:
     def __init__(self, font, font_scale, max_width):
         self.font = font
@@ -247,18 +255,20 @@ class TextWrapper:
         lines = []
         while words:
             line = ''
-            while words and cv2.getTextSize(line + words[0], self.font, self.font_scale, 1)[0][0] <= self.max_width:
+            while words and self.get_text_width(line + words[0]) <= self.max_width:
                 line = line + (words.pop(0) + ' ')
             lines.append(line.strip())
         return lines
 
+    def get_text_width(self, text):
+        return self.font.getsize(text)[0]
+
 class MemeGenerator:
     def __init__(self, api_key, template_paths):
         self.template_paths = template_paths
+        # Assuming `genai` is a placeholder for your actual model setup
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
-
-        import time
 
     def analyze_prompt(self, prompt, retries=8):
             for _ in range(retries):
@@ -271,12 +281,13 @@ class MemeGenerator:
                     response = self.model.generate_content(data)
                     response_text = response.text.strip().split('\n')
                     response_text = [item for item in response_text if item]
+        
 
                     template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
                     top_text = response_text[1] if len(response_text) > 1 else ""
-                    top_text = top_text.replace("**Top text**:", "").replace("**top text**:","").replace("**Bottom text**:", "").replace("**bottom text**:","")
+                    top_text = top_text.replace("**Top text**:", "").replace("**top text**:","").replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**top_text**:","").replace("**Top Text**:","")
                     bottom_text = response_text[2] if len(response_text) > 2 else ""
-                    bottom_text = bottom_text.replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**Top text**:", "").replace(" **top text**: ","")
+                    bottom_text = bottom_text.replace("**Bottom text**:", "").replace("**bottom text**:","").replace("**Top text**:", "").replace(" **top text**: ","").replace("**bottom_text**:","").replace("**Bottom Text**:", "")
 
                     template_choice = self.clean_template_choice(template_choice)
                     template_path = self.template_paths.get(template_choice, self.template_paths[template_choice])
@@ -292,7 +303,6 @@ class MemeGenerator:
                     else:
                         print("Retries exhausted, returning None")
                         return None, None, None
-
 
     @staticmethod
     def clean_template_choice(template_choice):
@@ -310,52 +320,74 @@ class MemeGenerator:
             raise FileNotFoundError(f"Image not found at {template_path}")
         return img
 
-    def add_text_to_image(self, img, top_text, bottom_text, font=cv2.FONT_HERSHEY_SIMPLEX):
-        image_height, image_width, _ = img.shape
-        
-        top_text_1 = top_text.replace("**Top text:**", "").replace("**Top text**:", "").replace("**Top Text**:", "")
-        bottom_text_1 = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "")
+    def add_text_to_image(self, img, top_text, bottom_text, font_path, font_size=45):
+        image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        draw = ImageDraw.Draw(image_pil)
+        font = ImageFont.truetype(font_path, font_size)
 
-        wrapper = TextWrapper(font, 1, image_width - 20)
-        wrapped_top_text = wrapper.wrap_text(top_text_1)
-        wrapped_bottom_text = wrapper.wrap_text(bottom_text_1)
+        def wrap_text(text, font, max_width):
+            words = text.split()
+            lines = []
+            while words:
+                line = ''
+                while words and draw.textbbox((0, 0), line + words[0], font=font)[2] <= max_width:
+                    line = line + (words.pop(0) + ' ')
+                lines.append(line.strip())
+            return lines
 
-        # Define shadow parameters
-        shadow_offset = 2
-        shadow_color = (0, 0, 0)  # Black shadow color
+        image_width, image_height = image_pil.size
+        max_text_width = image_width - 20
 
-        # Calculate positions for top text
+        wrapped_top_text = wrap_text(top_text, font, max_text_width)
+        wrapped_bottom_text = wrap_text(bottom_text, font, max_text_width)
+
         y_offset = 10
+        shadow_offset = 2
+
+        # Add top text
         for line in wrapped_top_text:
-            text_size = cv2.getTextSize(line, font, 1, 1)[0]
-            text_x = (image_width - text_size[0]) // 2
-            text_y = y_offset + text_size[1]
-            # Draw shadow first
-            cv2.putText(img, line, (text_x + shadow_offset, text_y + shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
-            # Then draw text
-            cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-            y_offset += text_size[1] + 10
-
-        # Calculate positions for bottom text
-        y_offset = image_height - 10
-        for line in reversed(wrapped_bottom_text):
-            text_size = cv2.getTextSize(line, font, 1, 1)[0]
-            text_x = (image_width - text_size[0]) // 2
+            text_bbox = draw.textbbox((0, 0), line, font=font)
+            text_width = text_bbox[2] - text_bbox[0]
+            text_height = text_bbox[3] - text_bbox[1]
+            text_x = (image_width - text_width) // 2
             text_y = y_offset
-            # Draw shadow first
-            cv2.putText(img, line, (text_x + shadow_offset, text_y - shadow_offset), font, 1, shadow_color, 2, lineType=cv2.LINE_AA)
-            # Then draw text
-            cv2.putText(img, line, (text_x, text_y), font, 1, (255, 255, 255), 2, lineType=cv2.LINE_AA)
-            y_offset -= text_size[1] + 10
-        
-        cv2.imwrite(utils.OUTPUT_MEME, img)
-        
-        return utils.savenft(utils.OUTPUT_MEME)
 
-    def create_meme(self, prompt):
+            draw.text((text_x + shadow_offset, text_y + shadow_offset), line, font=font, fill=(0, 0, 0))
+            draw.text((text_x, text_y), line, font=font, fill=(255, 255, 255))
+
+            y_offset += text_height + 15
+
+        # Adjust y_offset for bottom text to shift it up
+        bottom_text_shift = 28  # Adjust this value to shift the text up or down
+        y_offset = image_height - 10 - bottom_text_shift
+        
+        # Add bottom text
+        for line in reversed(wrapped_bottom_text):
+            text_bbox = draw.textbbox((0, 0), line, font=font)
+            text_width = text_bbox[2] - text_bbox[0]
+            text_height = text_bbox[3] - text_bbox[1]
+            text_x = (image_width - text_width) // 2
+            text_y = y_offset - text_height
+
+            draw.text((text_x + shadow_offset, text_y + shadow_offset), line, font=font, fill=(0, 0, 0))
+            draw.text((text_x, text_y), line, font=font, fill=(255, 255, 255))
+
+            y_offset -= text_height + 5
+
+        img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
+        cv2.imwrite(utils.OUTPUT, img)
+        return savenft(utils.OUTPUT)
+
+
+        # img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
+        # cv2.imwrite(utils.OUTPUT, img)
+        # return savenft(utils.OUTPUT)
+
+    def create_meme(self, prompt, font_path, font_size):
         template_path, top_text, bottom_text = self.analyze_prompt(prompt)
-        img = self.load_meme_template(template_path)
-        
-        return self.add_text_to_image(img, top_text, bottom_text)
+        if not template_path:
+            raise ValueError("No suitable template found.")
 
+        meme = self.load_meme_template(template_path)
 
+        return self.add_text_to_image(meme, top_text, bottom_text, font_path, font_size)
