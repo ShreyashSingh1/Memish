@@ -32,7 +32,8 @@ def understand(prompt, animate=False, normal=False, photo=False):
             raise Exception(f"Failed to generate content after {max_attempts} attempts.")
             
         if normal or animate:
-            prompt_text = f"Based on the prompt: '{prompt}', generate suitable image description top and bottom text for the image meme. Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible."
+            prompt_text = (f"Based on the prompt: '{prompt}', generate suitable image description, top text and bottom text for the image meme."
+                           " Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible.")
             image_des, top_t, bottom_t = generate_caption(prompt_text)
             
             return image_des, top_t, bottom_t

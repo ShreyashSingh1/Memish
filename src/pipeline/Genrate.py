@@ -134,39 +134,49 @@ class GenPhoto:
         try:
             logging.info("Generating image from prompt: " + prompt)
     
-            image_des, top_text, bottom_text = understand(prompt, animate, normal, photo)
-
+            # Assuming `understand` is defined somewhere
+            result = understand(prompt, animate, normal, photo)
+            
+            # Debugging: Log the result from `understand`
+            logging.info(f"Understand function returned: {result}")
+            
+            # Ensure `understand` returns exactly 3 values
+            if len(result) == 3:
+                image_des, top_text, bottom_text = result
+            else:
+                logging.error(f"Unexpected return value from understand function: {result}")
+                return "Error while generating meme, please check prompt details!"
+    
             if animate:
-                logging.info("Generating animate meme")
+                logging.info("Generating animated meme")
                 API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
-                headers = {
-                    "Authorization": "Bearer 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"
-                }
             elif normal:
                 logging.info("Generating normal meme")
                 API_URL = "https://api-inference.huggingface.co/models/fluently/Fluently-XL-Final"
-                headers = {
-                    "Authorization": "Bearer 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"
-                }
             else:
                 logging.error("Please specify either animate or normal mode")
                 return None
             
+            headers = {
+                "Authorization": "Bearer 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"
+            }
+    
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.content
-
+            
             image_bytes = query({"inputs": image_des})
             image = Image.open(io.BytesIO(image_bytes))
+            
             image.save(utils.INPUT)
             image.save(utils.OUTPUT)
             image.close()
-
+    
             return top_text, bottom_text
-
+    
         except Exception as e:
             logging.error("Error while generating image: " + str(e))
-            return "Error while generating meme!, please try again."
+            return "Error while generating meme, please try again."
         
     def drawimage(self, top_text, bottom_text, photo=False, normal=False, prompt=" "):
         if photo:
