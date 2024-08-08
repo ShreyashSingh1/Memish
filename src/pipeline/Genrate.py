@@ -26,7 +26,8 @@ class Gen:
 
             if animate:
                 logging.info("Generating animate meme")
-                API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
+                # API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
+                API_URL = "https://api-inference.huggingface.co/models/alvdansen/phantasma-anime"
                 headers = {
                     "Authorization": "Bearer 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"
                 }
@@ -226,14 +227,11 @@ class GenPhoto:
                 y_offset -= text_height + 10
 
             img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
-            return img
+            cv2.imwrite(utils.OUTPUT, img)
+            return savenft(utils.OUTPUT)
 
         meme = load_meme_template(utils.INPUT)
-        meme_with_text = add_text_to_image(meme, top_text, bottom_text, utils.FONT)
-        
-        cv2.imwrite(utils.OUTPUT, meme_with_text)
-        
-        return savenft(utils.OUTPUT)
+        return add_text_to_image(meme, top_text, bottom_text, utils.FONT)
 
 
 import cv2
