@@ -50,7 +50,7 @@ Here are some screenshots of Dopameme in action:
 ![Photo to Meme](https://i.imgur.com/Od25Pft.jpeg)
 *The Photo to Meme feature in action.*
 
-![Prompt to Image Meme](https://shreyashsingh.publit.io/file/output-ur.jpg)
+![Prompt to Image Meme](https://shreyashsingh.publit.io/file/output-0M.jpg)
 *Generating an image meme from a prompt.*
 
 ![Prompt to Video Meme](https://i.imgur.com/7jOTSED.gif)
