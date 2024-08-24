@@ -27,10 +27,10 @@ def savenft(path):
     from imgurpython import ImgurClient
 
     # Replace these with your Imgur client ID and secret
-    client_id = 'e838953025cdaad'
+    client_id = 'eaa91a80f980b64'
     # client_id = "3e33f272860472d"
     # client_secret = '7f25a5359417cee'
-    client_secret = '19387ff3d9b8db49f2c151596fe81bb491efa794'
+    client_secret = '06777683059c78566531dcb821a785d809382f1f'
 
     # # Create an ImgurClient instance
     client = ImgurClient(client_id, client_secret)
