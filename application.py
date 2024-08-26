@@ -60,7 +60,7 @@ def upload_video():
         image.save(utils.VIDEOMEMEPATH)
         # utils.resize_image()
         logging.info("Generating custom image meme!")
-        link_preview, link_download = meme_gen2.create_video_meme(data, utils.VIDEOMEMEPATH, utils.VIDEOMEMEPATHOUT)
+        link_preview, link_download = meme_gen2.create_video_meme(prompt=data, video_path=utils.VIDEOMEMEPATH, output_path=utils.VIDEOMEMEPATHOUT)
         logging.info("Custom image meme generation successful!")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:

@@ -188,6 +188,7 @@ class TextWrapper1:
             lines.append(current_line)
         return lines
 
+
 class VideoMeme:
     def __init__(self, api_key, font_path):
         self.font_path = font_path
@@ -222,7 +223,7 @@ class VideoMeme:
                 else:
                     print("Retries exhausted, returning None")
                     return None, None
-                
+
     @staticmethod
     def load_video_template(video_path):
         cap = cv2.VideoCapture(video_path)
@@ -289,28 +290,39 @@ class VideoMeme:
 
         self.add_text_to_video(video_path, top_text, bottom_text, output_path)
 
-        # Use FFmpeg to extract audio from the original video
+        # Check if the video has an audio stream
         audio_file = 'temp_audio.aac'
-        extract_audio_command = f'ffmpeg -i {video_path} -q:a 0 -map a {audio_file}'
-        try:
-            subprocess.run(extract_audio_command, shell=True, check=True)
+        audio_check_command = f'ffprobe -i {video_path} -show_streams -select_streams a -loglevel error'
+        audio_stream_exists = subprocess.run(audio_check_command, shell=True, stdout=subprocess.PIPE).stdout != b''
 
-            # Combine the new video with the extracted audio
-            temp_output_file = 'temp_output_with_audio.mp4'
-            combine_command = f'ffmpeg -i {output_path} -i {audio_file} -c copy -map 0:v:0 -map 1:a:0 {temp_output_file}'
-            subprocess.run(combine_command, shell=True, check=True)
+        if audio_stream_exists:
+            try:
+                # Extract audio from the original video
+                extract_audio_command = f'ffmpeg -i {video_path} -q:a 0 -map a {audio_file}'
+                subprocess.run(extract_audio_command, shell=True, check=True)
 
-            # Clean up and replace the final output
-            if os.path.exists(output_path):
-                os.remove(output_path)
-            os.rename(temp_output_file, output_path)
+                # Combine the new video with the extracted audio
+                temp_output_file = 'temp_output_with_audio.mp4'
+                combine_command = f'ffmpeg -i {output_path} -i {audio_file} -c copy -map 0:v:0 -map 1:a:0 {temp_output_file}'
+                subprocess.run(combine_command, shell=True, check=True)
 
-            # Remove the temporary audio file
-            os.remove(audio_file)
+                # Clean up and replace the final output
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+                os.rename(temp_output_file, output_path)
 
-            print("Video meme created successfully.")
+                # Remove the temporary audio file
+                os.remove(audio_file)
+
+                print("Video meme created successfully.")
+                return utils.savenft(utils.VIDEOMEMEPATHOUT)
+
+            except subprocess.CalledProcessError as e:
+                print(f"FFmpeg error: {e}")
+
+        else:
+            print("No audio stream found in the video. Skipping audio extraction.")
             return utils.savenft(utils.VIDEOMEMEPATHOUT)
-        
-        except subprocess.CalledProcessError as e:
-            print(f"FFmpeg error: {e}")
+
+
 
