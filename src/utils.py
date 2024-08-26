@@ -24,31 +24,28 @@ publitio_api = PublitioAPI(key=api_key , secret=api_secret)
 
 def savenft(path):
     
-    from imgurpython import ImgurClient
+    # from imgurpython import ImgurClient
 
-    # Replace these with your Imgur client ID and secret
-    client_id = 'eaa91a80f980b64'
-    # client_id = "3e33f272860472d"
-    # client_secret = '7f25a5359417cee'
-    client_secret = '06777683059c78566531dcb821a785d809382f1f'
+    # client_id = 'eaa91a80f980b64'
+ 
+    # client_secret = '06777683059c78566531dcb821a785d809382f1f'
 
-    # # Create an ImgurClient instance
-    client = ImgurClient(client_id, client_secret)
+    # client = ImgurClient(client_id, client_secret)
 
-    # Upload the image
-    response = client.upload_from_path(path, anon=True)
+    # # Upload the image
+    # response = client.upload_from_path(path, anon=True)
 
-    # Get the link to the uploaded image
-    image_link = response['link']
-    print(f"Image uploaded successfully. Link: {image_link}")
-    return image_link, image_link
+    # # Get the link to the uploaded image
+    # image_link = response['link']
+    # print(f"Image uploaded successfully. Link: {image_link}")
+    # return image_link, image_link
     
     # # print(f"Image uploaded successfully. Link: {image_link}")
-    # data = publitio_api.create_file(file=open(path, 'rb'),
-    #                         title='My title',
-    #                         description='My description')
+    data = publitio_api.create_file(file=open(path, 'rb'),
+                            title='My title',
+                            description='My description')
             
-    # return data['url_preview'], data["url_download"]
+    return data['url_preview'], data["url_download"]
 
 template_paths = {
     "adam_coles_surprise_kiss_catch_wrestling_wwe_bisou": os.path.join(working_dir, "img_templates", "Adam_Coles_Surprise_Kiss_Catch_Wrestling_WWE_Bisou.jpeg"),
