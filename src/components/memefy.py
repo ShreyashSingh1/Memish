@@ -33,7 +33,7 @@ def understand(prompt, animate=False, normal=False, photo=False):
             
         if normal or animate:
             prompt_text = (f"Based on the prompt: '{prompt}', generate suitable image description, top text and bottom text for the image meme."
-                           " Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible.")
+                           " Make sure the answer includes the key name as **image_description:**,**top_text**, **bottom_text:** key should same as given above and is as funny as possible. make sure  top text abnd bottom text 2-6 words only.")
             image_des, top_t, bottom_t = generate_caption(prompt_text)
             
             return image_des, top_t, bottom_t
