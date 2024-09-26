@@ -104,7 +104,7 @@ def create_video_meme():
         return jsonify({"error": "Error generating video meme"}), 500
     
     
-@app.route("/uploadimage", methods=["POST"])
+@app.route("/upload-image", methods=["POST"])
 def upload_image():
     try:
         image = request.files["image"]
