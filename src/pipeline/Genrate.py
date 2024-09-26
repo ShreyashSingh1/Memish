@@ -12,50 +12,62 @@ import google.generativeai as genai
 import numpy as np
 
 template_paths = utils.template_paths
-
-
-class Gen:
+   
+class GenPhoto:
     def __init__(self):
         pass
 
     def genimg(self, prompt, animate=False, normal=False, photo=False):
         try:
-            logging.info("Generating image from prompt: " + prompt)
-    
-            image_des, top_text, bottom_text = understand(prompt, animate, normal, photo)
-
-            if animate:
-                logging.info("Generating animate meme")
-                # API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
-                API_URL = "https://api-inference.huggingface.co/models/alvdansen/phantasma-anime"
-                headers = {
-                    "Authorization": "Bearer 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"
-                }
-            elif normal:
-                logging.info("Generating normal meme")
-                API_URL = "https://api-inference.huggingface.co/models/fluently/Fluently-XL-Final"
-                headers = {
-                    "Authorization": "Bearer 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"
-                }
-            else:
-                logging.error("Please specify either animate or normal mode")
-                return None
+            logging.info(f"Generating image from prompt: {prompt}")
+            result = understand(prompt, animate, normal, photo)
+            logging.info(f"Understand function returned: {result}")
             
-            def query(payload):
-                response = requests.post(API_URL, headers=headers, json=payload)
-                return response.content
+            if len(result) != 3:
+                logging.error(f"Unexpected return value from understand function: {result}")
+                return "Error: Failed to generate meme."
+            
+            image_des, top_text, bottom_text = result
 
-            image_bytes = query({"inputs": image_des})
-            image = Image.open(io.BytesIO(image_bytes))
-            image.save(utils.INPUT)
-            image.save(utils.OUTPUT)
-            image.close()
-
-            return top_text, bottom_text
+            if animate or normal:
+                model_url = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
+                if animate:
+                        self.query_and_generate_image(model_url, image_des+ " "+ "make this image look like anime", top_text, bottom_text)
+                else:
+                        self.query_and_generate_image(model_url, image_des, top_text, bottom_text)
+                return top_text, bottom_text
+            
+            logging.error("Neither 'animate' nor 'normal' mode specified")
+            return "Error: Please specify a valid mode."
 
         except Exception as e:
-            logging.error("Error while generating image: " + str(e))
-            return "Error while generating meme!, please try again."
+            logging.error(f"Error in genimg function: {e}")
+            return "Error: Failed to generate meme."
+
+    def query_and_generate_image(self, api_url, image_des, top_text, bottom_text):
+        try:
+            headers = {"Authorization": "Bearer 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"}
+            # Query the API to generate the image
+            response = requests.post(api_url, headers=headers, json={"inputs": image_des})
+            response.raise_for_status()  # Raises an error for unsuccessful status codes
+
+            # Alternative: Directly decode image bytes using OpenCV
+            np_arr = np.frombuffer(response.content, np.uint8)  # Convert the byte content to a numpy array
+            image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  # Decode the numpy array to an image
+
+            # Ensure image decoding was successful
+            if image is None:
+                raise Exception("Failed to decode the image from response bytes.")
+
+            # Save the image using OpenCV
+            cv2.imwrite(utils.INPUT, image)  # Save the input for further processing
+            cv2.imwrite(utils.OUTPUT, image)  # Save the output for later use
+    
+            return "Image generated successfully!"
+        except Exception as e:
+            logging.error(f"Error querying API: {e}")
+            return "Error: Failed to generate image."
+
 
     def drawimage(self, top_text, bottom_text, photo=False, normal=False, prompt=" "):
         if photo:
@@ -67,7 +79,7 @@ class Gen:
                 raise FileNotFoundError(f"Image not found at {template_path}")
             return img
 
-        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=142):
+        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=45):
             image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             draw = ImageDraw.Draw(image_pil)
             font = ImageFont.truetype(font_path, font_size)
@@ -118,130 +130,17 @@ class Gen:
 
             img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
             return img
-
+        if photo:
+            size = 142
+        else:
+            size = 45
         meme = load_meme_template(utils.INPUT)
-        meme_with_text = add_text_to_image(meme, top_text, bottom_text, utils.FONT)
+        meme_with_text = add_text_to_image(meme, top_text, bottom_text, utils.FONT, font_size=size)
         
         cv2.imwrite(utils.OUTPUT, meme_with_text)
         
         return savenft(utils.OUTPUT)
-   
-class GenPhoto:
-    def __init__(self):
-        pass
 
-    def genimg(self, prompt, animate=False, normal=False, photo=False):
-        try:
-            logging.info("Generating image from prompt: " + prompt)
-    
-            # Assuming `understand` is defined somewhere
-            result = understand(prompt, animate, normal, photo)
-            
-            # Debugging: Log the result from `understand`
-            logging.info(f"Understand function returned: {result}")
-            
-            # Ensure `understand` returns exactly 3 values
-            if len(result) == 3:
-                image_des, top_text, bottom_text = result
-            else:
-                logging.error(f"Unexpected return value from understand function: {result}")
-                return "Error while generating meme, please check prompt details!"
-    
-            if animate:
-                logging.info("Generating animated meme")
-                API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
-            elif normal:
-                logging.info("Generating normal meme")
-                API_URL = "https://api-inference.huggingface.co/models/fluently/Fluently-XL-Final"
-            else:
-                logging.error("Please specify either animate or normal mode")
-                return None
-            
-            headers = {
-                "Authorization": "Bearer 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"
-            }
-    
-            def query(payload):
-                response = requests.post(API_URL, headers=headers, json=payload)
-                return response.content
-            
-            image_bytes = query({"inputs": image_des})
-            image = Image.open(io.BytesIO(image_bytes))
-            
-            image.save(utils.INPUT)
-            image.save(utils.OUTPUT)
-            image.close()
-    
-            return top_text, bottom_text
-    
-        except Exception as e:
-            logging.error("Error while generating image: " + str(e))
-            return "Error while generating meme, please try again."
-        
-    def drawimage(self, top_text, bottom_text, photo=False, normal=False, prompt=" "):
-        if photo:
-            top_text, bottom_text = understand(prompt=prompt, photo=True)
-
-        def load_meme_template(template_path):
-            img = cv2.imread(template_path)
-            if img is None:
-                raise FileNotFoundError(f"Image not found at {template_path}")
-            return img        
-        def add_text_to_image(img, top_text, bottom_text, font_path, font_size=45):
-            image_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-            draw = ImageDraw.Draw(image_pil)
-            font = ImageFont.truetype(font_path, font_size)
-
-            def wrap_text(text, font, max_width):
-                words = text.split()
-                lines = []
-                while words:
-                    line = ''
-                    while words and draw.textbbox((0, 0), line + words[0], font=font)[2] <= max_width:
-                        line = line + (words.pop(0) + ' ')
-                    lines.append(line.strip())
-                return lines
-
-            image_width, image_height = image_pil.size
-            max_text_width = image_width - 20
-
-            wrapped_top_text = wrap_text(top_text, font, max_text_width)
-            wrapped_bottom_text = wrap_text(bottom_text, font, max_text_width)
-
-            y_offset = 10
-            shadow_offset = 2
-
-            for line in wrapped_top_text:
-                text_bbox = draw.textbbox((0, 0), line, font=font)
-                text_width = text_bbox[2] - text_bbox[0]
-                text_height = text_bbox[3] - text_bbox[1]
-                text_x = (image_width - text_width) // 2
-                text_y = y_offset
-
-                draw.text((text_x + shadow_offset, text_y + shadow_offset), line, font=font, fill=(0, 0, 0))
-                draw.text((text_x, text_y), line, font=font, fill=(255, 255, 255))
-
-                y_offset += text_height + 10
-
-            y_offset = image_height - 10
-            for line in reversed(wrapped_bottom_text):
-                text_bbox = draw.textbbox((0, 0), line, font=font)
-                text_width = text_bbox[2] - text_bbox[0]
-                text_height = text_bbox[3] - text_bbox[1]
-                text_x = (image_width - text_width) // 2
-                text_y = y_offset - text_height
-
-                draw.text((text_x + shadow_offset, text_y + shadow_offset), line, font=font, fill=(0, 0, 0))
-                draw.text((text_x, text_y), line, font=font, fill=(255, 255, 255))
-
-                y_offset -= text_height + 10
-
-            img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
-            cv2.imwrite(utils.OUTPUT, img)
-            return savenft(utils.OUTPUT)
-
-        meme = load_meme_template(utils.INPUT)
-        return add_text_to_image(meme, top_text, bottom_text, utils.FONT)
 
 
 import cv2

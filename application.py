@@ -8,8 +8,6 @@ from src.pipeline.genrate_video import VedioGenerator, VideoMeme
 app = Flask(__name__)
 CORS(app)
 
-# Initialize the generators
-draw = Genrate.Gen()
 draw1 = Genrate.GenPhoto()
 meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths, utils.FONT)
@@ -21,11 +19,12 @@ def home():
     return render_template("index.html")
     
     
-@app.route("/imgen", methods=["POST"])
+@app.route("/text-to-image-gen-meme", methods=["POST"])
 def make_image():
     try:
         data = request.json
         toptext, bottomtext = draw1.genimg(data["prompt"], normal=True)
+        print(toptext, bottomtext)
         logging.info("Image generated successfully!")
         link_preview, link_download = draw1.drawimage(toptext, bottomtext, normal=True)
         return jsonify({"link_preview": link_preview, "link_download": link_download})
@@ -34,41 +33,7 @@ def make_image():
         return jsonify({"error": "Error generating image"}), 500
 
 
-@app.route("/uploadphoto", methods=["POST"])
-def upload_photo():
-    try:
-        image = request.files["image"]
-        data = request.form["prompt"]
-        print(data)
-        image.save(utils.INPUT)
-        # utils.resize_image()
-        logging.info("Generating custom image meme!")
-        link_preview, link_download = draw.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
-        logging.info("Custom image meme generation successful!")
-        return jsonify({"link_preview": link_preview, "link_download": link_download})
-    except Exception as e:
-        logging.error(f"Error uploading photo: {e}")
-        return jsonify({"error": "Error uploading photo"}), 500
-    
-    
-@app.route("/uploadvideo_meme", methods=["POST"])
-def upload_video():
-    try:
-        image = request.files["video"]
-        data = request.form["prompt"]
-        print(data)
-        image.save(utils.VIDEOMEMEPATH)
-        # utils.resize_image()
-        logging.info("Generating custom image meme!")
-        link_preview, link_download = meme_gen2.create_video_meme(prompt=data, video_path=utils.VIDEOMEMEPATH, output_path=utils.VIDEOMEMEPATHOUT)
-        logging.info("Custom image meme generation successful!")
-        return jsonify({"link_preview": link_preview, "link_download": link_download})
-    except Exception as e:
-        logging.error(f"Error uploading photo: {e}")
-        return jsonify({"error": "Error uploading Video"}), 500
-    
-        
-@app.route("/imgen1", methods=["POST"])
+@app.route("/text-to-anime-image-gen-meme", methods=["POST"])
 def generate_anime_image():
     try:
         data = request.json
@@ -78,9 +43,43 @@ def generate_anime_image():
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating anime image: {e}")
-        return jsonify({"error": "Error generating anime image"}), 500
+        return jsonify({"error": "Error generating anime image"}), 500   
+    
+    
+@app.route("/upload-photo-to-meme", methods=["POST"])
+def upload_photo():
+    try:
+        image = request.files["image"]
+        data = request.form["prompt"]
+        print(data)
+        image.save(utils.INPUT)
+        # utils.resize_image()
+        logging.info("Generating custom image meme!")
+        link_preview, link_download = draw1.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
+        logging.info("Custom image meme generation successful!")
+        return jsonify({"link_preview": link_preview, "link_download": link_download})
+    except Exception as e:
+        logging.error(f"Error uploading photo: {e}")
+        return jsonify({"error": "Error uploading photo"}), 500
 
 
+@app.route("/upload-video-meme", methods=["POST"])
+def upload_video():
+    try:
+        image = request.files["video"]
+        data = request.form["prompt"]
+        print(data)
+        image.save(utils.VIDEOMEMEPATH)
+        # utils.resize_image()
+        logging.info("Generating custom image meme!")
+        link_preview, link_download = meme_gen2.create_video_meme(data, utils.VIDEOMEMEPATH, utils.VIDEOMEMEPATHOUT)
+        logging.info("Custom image meme generation successful!")
+        return jsonify({"link_preview": link_preview, "link_download": link_download})
+    except Exception as e:
+        logging.error(f"Error uploading photo: {e}")
+        return jsonify({"error": "Error uploading Video"}), 500
+    
+        
 @app.route("/template", methods=["POST"])
 def create_template_meme():
     try:
