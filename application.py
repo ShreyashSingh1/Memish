@@ -53,7 +53,6 @@ def upload_photo():
         data = request.form["prompt"]
         print(data)
         image.save(utils.INPUT)
-        # utils.resize_image()
         logging.info("Generating custom image meme!")
         link_preview, link_download = draw1.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
         logging.info("Custom image meme generation successful!")
@@ -63,7 +62,7 @@ def upload_photo():
         return jsonify({"error": "Error uploading photo"}), 500
 
 
-@app.route("/upload-video-meme", methods=["POST"])
+@app.route("/upload-video-to-meme", methods=["POST"])
 def upload_video():
     try:
         image = request.files["video"]
@@ -80,7 +79,7 @@ def upload_video():
         return jsonify({"error": "Error uploading Video"}), 500
     
         
-@app.route("/template", methods=["POST"])
+@app.route("/text-to-template-meme", methods=["POST"])
 def create_template_meme():
     try:
         data = request.json
@@ -92,7 +91,7 @@ def create_template_meme():
         return jsonify({"error": "Error generating anime image"}), 500
 
 
-@app.route("/video", methods=["POST"])
+@app.route("/text-to-video-meme", methods=["POST"])
 def create_video_meme():
     try:
         data = request.json
