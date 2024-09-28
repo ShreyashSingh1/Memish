@@ -39,9 +39,10 @@ def understand(prompt, animate=False, normal=False, photo=False):
 
         elif photo:
             def get_gemini_response(input, image_path):
-                image = Image.open(image_path) 
                 
+                image = Image.open(image_path) 
                 model = genai.GenerativeModel('gemini-1.5-flash')
+                
                 if input != "":
                     response = model.generate_content([input, image])
                 else:
@@ -50,25 +51,23 @@ def understand(prompt, animate=False, normal=False, photo=False):
                 return response.text
 
             try:
-                output = get_gemini_response("This photo is going to be used as a meme give a description of it do our accordling so that at next request to gemini can make good meme of it ", utils.INPUT)
-                prompt_text = f"The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the image.. Based on the image description: '{output[0]['generated_text']}', generate a meme. The user's feelings about the image are: '{prompt}'. This is for an image meme with both top and bottom text.Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each."
+                output = get_gemini_response("This photo is going to be used as a meme give a description of it do our accordling so that at next request to gemini model can make good meme of it ", utils.INPUT)
+                prompt_text = f"The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the image.. Based on the image description: '{output}', generate a meme. The user's feelings about the image are: '{prompt}'. This is for an image meme with both top and bottom text.Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each."
                 
                 for _ in range(8):
                     try:
                         response = model.generate_content(prompt_text)
-                        print(response.text)
                         response_text = [item.strip() for item in response.text.split('\n') if item]
                         
                         top_text = response_text[0].replace("**top_text:**", "").replace("**top_text**:", "") if len(response_text) > 0 else ""
                         bottom_text = response_text[1].replace("**bottom_text:**", "").replace("\\", "").replace("**bottom_text**:", "") if len(response_text) > 1 else ""
-                        # print(top_text, bottom_text, "12eqerwra")
                         return top_text, bottom_text
                     except Exception as e:
                         logging.error(f"Error generating meme content: {e}")
             
             except Exception as e:
                 logging.error(f"Error querying API: {e}")
-                return "Error: Failed to query API"
+                return e
                 
     except Exception as e:
         logging.error(f"Error in understand function: {e}")

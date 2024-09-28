@@ -230,19 +230,19 @@ class VideoMeme:
         
         for _ in range(retries):
             try:
-                data = (f"The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the meme. 
+                data = f"""The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the meme. 
                         Based on the video description: '{video_description}', generate a meme. The user's words about the video are: '{prompt}'. 
-                        This is for an video meme with both top and bottom text. Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each.")
+                        This is for an video meme with both top and bottom text. Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each."""
 
                 response = self.model.generate_content(data)
                 response_text = response.text.strip().split('\n')
                 response_text = [item for item in response_text if item]
 
                 top_text = response_text[0] if len(response_text) > 0 else ""
-                top_text = top_text.replace("**Top text:**", "").replace("**Top text**:", "").replace("**Top Text**:", "").strip()
+                top_text = top_text.replace("**Top text:**", "").replace("**top_text**:", "").replace("**Top Text**:", "").replace("**top_text:**", "").strip()
 
                 bottom_text = response_text[1] if len(response_text) > 1 else ""
-                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").strip()
+                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").replace("**bottom_text:**").strip()
 
                 return top_text, bottom_text
 
