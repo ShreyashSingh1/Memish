@@ -1,7 +1,8 @@
-import requests
 import google.generativeai as genai  
 from src.logger import logging  
 import src.utils as utils  
+from PIL import Image
+
 
 def understand(prompt, animate=False, normal=False, photo=False):
     try:
@@ -37,24 +38,19 @@ def understand(prompt, animate=False, normal=False, photo=False):
             return generate_caption(prompt_text)
 
         elif photo:
-            API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
-            headers = {"Authorization": "Bearer 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"}
-
-            def query_api(filename, max_attempts=8):
-                for _ in range(max_attempts):
-                    try:
-                        with open(filename, "rb") as f:
-                            data = f.read()
-                        response = requests.post(API_URL, headers=headers, data=data)
-                        if response.status_code == 200:
-                            return response.json()
-                    except Exception as e:
-                        logging.error(f"Error querying API: {e}")
+            def get_gemini_response(input, image_path):
+                image = Image.open(image_path) 
                 
-                raise Exception(f"Failed to query API after {max_attempts} attempts.")
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                if input != "":
+                    response = model.generate_content([input, image])
+                else:
+                    response = model.generate_content(image)
+                
+                return response.text
 
             try:
-                output = query_api(utils.INPUT)
+                output = get_gemini_response("This photo is going to be used as a meme give a description of it do our accordling so that at next request to gemini can make good meme of it ", utils.INPUT)
                 prompt_text = f"The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the image.. Based on the image description: '{output[0]['generated_text']}', generate a meme. The user's feelings about the image are: '{prompt}'. This is for an image meme with both top and bottom text.Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each."
                 
                 for _ in range(8):

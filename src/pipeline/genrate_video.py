@@ -5,6 +5,8 @@ import google.generativeai as genai
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import src.utils as utils
+import time
+
 
 class TextWrapper:
     def __init__(self, font, max_width):
@@ -195,13 +197,42 @@ class VideoMeme:
         self.font = ImageFont.truetype(font_path, 30)
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-pro")
+        self.model_vision = genai.GenerativeModel(model_name="gemini-1.5-flash")
+
 
     def analyze_prompt(self, prompt, retries=15):
+        
+        video_file_name = utils.VIDEOMEMEPATH
+
+        print(f"Uploading file...")
+        video_file = genai.upload_file(path=video_file_name)
+        print(f"Completed upload: {video_file.uri}")
+        
         for _ in range(retries):
             try:
-                data = (f"Based on the prompt: '{prompt}' "
-                        "generate suitable top and bottom text for the video meme. "
-                        "Make sure the answer includes the key name as **Top text:**, **Bottom text:** key should same as given above and is as funny and crazy as possible")
+                while video_file.state.name == "PROCESSING":
+                    print('.', end='')
+                    time.sleep(2)
+                    video_file = genai.get_file(video_file.name)
+
+                if video_file.state.name == "FAILED":
+                    raise ValueError(video_file.state.name)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        
+        prompt = "This video is going to be used as a meme give a description of it do our accordling so that at next request to gemini can make good meme of it"
+
+        print("Making LLM inference request...")
+        response = self.model_vision.generate_content([video_file, prompt],
+                                        request_options={"timeout": 600})
+
+        video_description = response.text
+        
+        for _ in range(retries):
+            try:
+                data = (f"The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the meme. 
+                        Based on the video description: '{video_description}', generate a meme. The user's words about the video are: '{prompt}'. 
+                        This is for an video meme with both top and bottom text. Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each.")
 
                 response = self.model.generate_content(data)
                 response_text = response.text.strip().split('\n')
