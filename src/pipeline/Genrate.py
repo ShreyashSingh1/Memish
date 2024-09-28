@@ -47,21 +47,17 @@ class GenPhoto:
     def query_and_generate_image(self, api_url, image_des, top_text, bottom_text):
         try:
             headers = {"Authorization": "Bearer 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"}
-            # Query the API to generate the image
             response = requests.post(api_url, headers=headers, json={"inputs": image_des})
-            response.raise_for_status()  # Raises an error for unsuccessful status codes
+            response.raise_for_status()  
 
-            # Alternative: Directly decode image bytes using OpenCV
-            np_arr = np.frombuffer(response.content, np.uint8)  # Convert the byte content to a numpy array
-            image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  # Decode the numpy array to an image
+            np_arr = np.frombuffer(response.content, np.uint8)  
+            image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  
 
-            # Ensure image decoding was successful
             if image is None:
                 raise Exception("Failed to decode the image from response bytes.")
 
-            # Save the image using OpenCV
-            cv2.imwrite(utils.INPUT, image)  # Save the input for further processing
-            cv2.imwrite(utils.OUTPUT, image)  # Save the output for later use
+            cv2.imwrite(utils.INPUT, image)  
+            cv2.imwrite(utils.OUTPUT, image)  
     
             return "Image generated successfully!"
         except Exception as e:
@@ -100,7 +96,7 @@ class GenPhoto:
             wrapped_top_text = wrap_text(top_text, font, max_text_width)
             wrapped_bottom_text = wrap_text(bottom_text, font, max_text_width)
 
-            y_offset = image_height // 16  # Shift the top text down slightly more
+            y_offset = image_height // 16 
             shadow_offset = 2
 
             for line in wrapped_top_text:
@@ -115,7 +111,7 @@ class GenPhoto:
 
                 y_offset += text_height + 10
 
-            y_offset = image_height * 5.3 // 6 # Shift the bottom text up slightly more
+            y_offset = image_height * 5.3 // 6 
             for line in wrapped_bottom_text:
                 text_bbox = draw.textbbox((0, 0), line, font=font)
                 text_width = text_bbox[2] - text_bbox[0]
@@ -185,7 +181,6 @@ class MemeGenerator:
                 response = self.model.generate_content(query_template)
                 response_text = response.text.strip().split('\n')
 
-                # Clean and extract template choice and texts
                 template_choice = response_text[0].replace("**meme_template**:", "").strip().lower().replace(" ", "_")
                 top_text = response_text[1].replace("**top_text**:", "").strip()
                 bottom_text = response_text[2].replace("**bottom_text**:", "").strip()
@@ -203,7 +198,7 @@ class MemeGenerator:
 
     @staticmethod
     def clean_template_choice(template_choice):
-        # Remove unwanted characters from template choice
+
         for char in ":,-'`.?!**":
             template_choice = template_choice.replace(char, "")
         template_choice = template_choice.strip('_')
@@ -234,26 +229,22 @@ class MemeGenerator:
         image_width, image_height = image_pil.size
         max_text_width = image_width - 20
 
-        # Wrapping the top and bottom text
         wrapped_top_text = wrap_text(top_text, max_text_width)
         wrapped_bottom_text = wrap_text(bottom_text, max_text_width)
 
         y_offset = 10
         shadow_offset = 2
 
-        # Add top text
         for line in wrapped_top_text:
             self.draw_shadowed_text(draw, line, font, y_offset, image_width, shadow_offset)
             text_height = draw.textbbox((0, 0), line, font=font)[3]
             y_offset += text_height + 15
 
-        # Adjust y_offset for bottom text and add bottom text
-        y_offset = image_height - 30  # Adjust this value for text placement
+        y_offset = image_height - 30 
         for line in reversed(wrapped_bottom_text):
             y_offset -= draw.textbbox((0, 0), line, font=font)[3] + 5
             self.draw_shadowed_text(draw, line, font, y_offset, image_width, shadow_offset)
 
-        # Convert back to OpenCV format and save
         img = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
         cv2.imwrite(utils.OUTPUT, img)
         return savenft(utils.OUTPUT)
@@ -264,9 +255,8 @@ class MemeGenerator:
         text_width = text_bbox[2] - text_bbox[0]
         text_x = (image_width - text_width) // 2
 
-        # Draw shadow
+        
         draw.text((text_x + shadow_offset, y + shadow_offset), text, font=font, fill=(0, 0, 0))
-        # Draw text
         draw.text((text_x, y), text, font=font, fill=(255, 255, 255))
 
     def create_meme(self, prompt, font_path, font_size=45):

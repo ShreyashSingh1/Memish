@@ -10,10 +10,10 @@ app = Flask(__name__)
 CORS(app)
 
 
-Photo_meme_maker = Genrate.GenPhoto()
+photo_memer = Genrate.GenPhoto()
 meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths, utils.FONT)
-meme_gen2 = VideoMeme(utils.GEN_KEY, utils.FONT)
+upload_video_memer = VideoMeme(utils.GEN_KEY, utils.FONT)
 
 
 @app.route("/", methods=["GET"])
@@ -24,10 +24,10 @@ def home():
 def make_image():
     try:
         data = request.json
-        toptext, bottomtext = Photo_meme_maker.genimg(data["prompt"], normal=True)
+        toptext, bottomtext = photo_memer.genimg(data["prompt"], normal=True)
         print(toptext, bottomtext)
         logging.info("Image generated successfully!")
-        link_preview, link_download = Photo_meme_maker.drawimage(toptext, bottomtext, normal=True)
+        link_preview, link_download = photo_memer.drawimage(toptext, bottomtext, normal=True)
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating image: {e}")
@@ -38,9 +38,9 @@ def make_image():
 def generate_anime_image():
     try:
         data = request.json
-        top_text, bottom_text = Photo_meme_maker.genimg(data["prompt"], animate=True)
+        top_text, bottom_text = photo_memer.genimg(data["prompt"], animate=True)
         logging.info("Anime image generated successfully!")
-        link_preview, link_download = Photo_meme_maker.drawimage(top_text, bottom_text)
+        link_preview, link_download = photo_memer.drawimage(top_text, bottom_text)
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating anime image: {e}")
@@ -55,7 +55,7 @@ def upload_photo():
         print(data)
         image.save(utils.INPUT)
         logging.info("Generating custom image meme!")
-        link_preview, link_download = Photo_meme_maker.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
+        link_preview, link_download = photo_memer.drawimage(top_text=" ", bottom_text=" ", photo=True, prompt=data)
         logging.info("Custom image meme generation successful!")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
@@ -71,7 +71,7 @@ def upload_video():
         print(data)
         image.save(utils.VIDEOMEMEPATH)
         logging.info("Generating custom image meme!")
-        link_preview, link_download = meme_gen2.create_video_meme(data, utils.VIDEOMEMEPATH, utils.VIDEOMEMEPATHOUT)
+        link_preview, link_download = upload_video_memer.create_video_meme(data, utils.VIDEOMEMEPATH, utils.VIDEOMEMEPATHOUT)
         logging.info("Custom image meme generation successful!")
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
