@@ -243,7 +243,7 @@ class VideoMeme:
                 top_text = top_text.replace("**Top text:**", "").replace("**top_text**:", "").replace("**Top Text**:", "").replace("**top_text:**", "").strip()
 
                 bottom_text = response_text[1] if len(response_text) > 1 else ""
-                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").replace("**bottom_text:**", "").strip()
+                bottom_text = bottom_text.replace("**Bottom text:**", "").replace("**Bottom text**:", "").replace("**Bottom Text**:", "").replace("**bottom_text:**", "").replace("**bottom_text**:", "").strip()
                 print(top_text, bottom_text)
 
                 return top_text, bottom_text
