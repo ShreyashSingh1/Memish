@@ -138,3 +138,29 @@ template_video_paths = {
 
 
 
+TemplateMemeDescriptions = {
+    "dragon": {"description" :""" This meme template is called the "Three-headed Dragon" meme, featuring three dragon heads where two are menacing, and one has a goofy, silly expression.
+                    Text Boxes (4 required):
+                    The two serious dragon heads represent something competent, intimidating, or efficient.
+                    The third goofy dragon head contrasts the other two, representing something that is silly, incompetent, or out of place.
+                    Text Breakdown:
+
+                    text_1: (Optional Heading or Comparison): Can be used to label the overall situation or the group being compared.
+                    text_2: (First Dragon - Left): Represents a strong, capable, or serious entity or characteristic.
+                    text_3: (Second Dragon - Middle): Represents another strong or capable entity or characteristic, similar to the first.
+                    text_4: (Third Dragon - Right): Represents something that is significantly less competent, often humorous or ridiculous in contrast.
+            """,
+            "number_of_texts": 4
+    }
+    ,
+    "siper-man": {"description": """    This is the "Spider-Man pointing at Spider-Man" meme template. It features three Spider-Men standing in a circle, pointing at each other, representing a situation where multiple parties are blaming or accusing each other for something, often humorously highlighting confusion or hypocrisy.
+                        Text Boxes (3 required):
+                        text_1: Represents Person/Group A who is blaming or accusing the others.
+                        text_2: Represents Person/Group B who is also blaming or accusing the others.
+                        text_3: Represents Person/Group C who, again, is blaming or accusing the others.
+                        Each character should be labeled to reflect the parties or entities involved in a confusing or hypocritical situation where everyone is accusing one another of the same thing.
+                """,
+            "number_of_texts": 3
+    }
+    
+}

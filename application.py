@@ -14,6 +14,7 @@ photo_memer = Genrate.GenPhoto()
 meme_generator = Genrate.MemeGenerator(utils.GEN_KEY, utils.template_paths)
 meme_gen1 = VedioGenerator(utils.GEN_KEY, utils.template_video_paths, utils.FONT)
 upload_video_memer = VideoMeme(utils.GEN_KEY, utils.FONT)
+Caption_maker = Genrate.MakeCaptions()
 
 
 @app.route("/", methods=["GET"])
@@ -101,8 +102,22 @@ def create_video_meme():
         return jsonify({"link_preview": link_preview, "link_download": link_download})
     except Exception as e:
         logging.error(f"Error generating video meme: {e}")
-        return jsonify({"error": "Error generating video meme"}), 500
+        return jsonify({"error": "Error generating video meme"}), 500  
+
+
+@app.route("/select-template-meme", methods=["POST"])
+def create_select_template_meme():
+    data = request.json
+    logging.info(f"Received data: {data}")
     
+    if not data or "prompt" not in data or "description_key" not in data:
+        logging.error("Invalid data format. 'prompt' or 'description_key' is missing.")
+        return {"error": "Invalid data format"}, 400
+
+    logging.info("Generating chosen meme!")
+    data  = Caption_maker.create_meme(data["prompt"], data["description_key"])
+    return jsonify(data), 200
+
     
 @app.route("/upload-image", methods=["POST"])
 def upload_image():
@@ -116,7 +131,6 @@ def upload_image():
     except Exception as e:
         logging.error(f"Error uploading image: {e}")
         return jsonify({"error": "Error uploading image"}), 500
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

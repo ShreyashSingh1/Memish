@@ -10,8 +10,10 @@ from src.logger import logging
 import cv2
 import google.generativeai as genai
 import numpy as np
+genai.configure(api_key="AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk")
 
 template_paths = utils.template_paths
+Template_Data = utils.TemplateMemeDescriptions
    
 class GenPhoto:
     def __init__(self):
@@ -266,3 +268,70 @@ class MemeGenerator:
 
         meme = self.load_meme_template(template_path)
         return self.add_text_to_image(meme, top_text, bottom_text, font_path, font_size)
+
+
+
+
+class MakeCaptions:
+    def __init__(self):
+        self.model = genai.GenerativeModel("gemini-pro") 
+        self.Template_Data = utils.TemplateMemeDescriptions   
+        
+    def extract_descriptions(self, description_key):
+        description = self.Template_Data[description_key]["description"]
+        number_of_texts =  self.Template_Data[description_key]["number_of_texts"]
+        print(description, number_of_texts)
+        return description, number_of_texts
+
+    def create_meme(self, prompt, description_key): 
+        description, number_of_texts = self.extract_descriptions(description_key)
+        retries = 5
+        for i in range(retries):
+            try:
+                if number_of_texts == 3:
+                    query_template = (
+                                        f"Based on the prompt: '{prompt}', generate meme texts."
+                                        f" This is the description of the template: {description}"
+                                        f" Generate a suitable response with {number_of_texts} short, distinct texts (1-6 words each)."
+                                        f" Use any humor required"
+                                        f" Format the output exactly as follows: "
+                                        f"text_1: <text_1>\ntext_2: <text_2>\ntext_3: <text_3>."
+                                    )      
+                    
+                    response = self.model.generate_content(query_template)
+                    
+                    response_text = response.text.strip().split('\n')
+
+                    text_1 = response_text[0].replace("text_1:", "").strip().lower().replace(" ", "_")
+                    text_2 = response_text[1].replace("text_2:", "").strip()
+                    text_3 = response_text[2].replace("text_3:", "").strip()
+                                
+                    return (text_1, text_2, text_3)
+                
+                if number_of_texts == 4:
+                    query_template = query_template = (
+                                                        f"Based on the prompt: '{prompt}', generate meme texts."
+                                                        f" This is the description of the template: {description}"
+                                                        f" Generate a suitable response with {number_of_texts} short, distinct texts (1-6 words each)."
+                                                        f" Use humor, but ensure that the response includes text_1, text_2, text_3, and text_4."
+                                                        f" Format the output exactly as follows: "
+                                                        f"text_1: <text_1>\ntext_2: <text_2>\ntext_3: <text_3>\ntext_4: <text_4>."
+                                                    )
+                    
+                    response = self.model.generate_content(query_template)
+                    response_text = response.text.strip()
+
+                    response_lines = response_text.split('\n')
+
+                    if len(response_lines) >= 4:
+                        text_1 = response_lines[0].replace("text_1:", "").strip().lower().replace(" ", "_")
+                        text_2 = response_lines[1].replace("text_2:", "").strip()
+                        text_3 = response_lines[2].replace("text_3:", "").strip()
+                        text_4 = response_lines[3].replace("text_4:", "").strip()
+                        return (text_1, text_2, text_3, text_4)
+                    else:
+                        raise ValueError("Response does not contain the expected number of lines.")
+                
+            except Exception as e:
+                logging.error(f"Error in generating meme content: {e}")
+                print("Error: Failed to generate meme texts.")
