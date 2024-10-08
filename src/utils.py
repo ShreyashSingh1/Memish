@@ -284,4 +284,16 @@ TemplateMemeDescriptions = {
         The text should convey the urgency and enthusiasm surrounding the situation being represented.""",
         "number_of_texts": 2
     },
+    "Drake Hotline Bling": {
+        "description": """This is the popular "Drake Hotline Bling" meme template, which consists of two panels featuring the rapper Drake.
+
+        Top Panel: Drake is rejecting something with a disgusted expression and raised hand, signaling disapproval.
+        Bottom Panel: Drake is smiling and pointing, showing approval or preference for something else.
+
+        Text Boxes (2 required):
+        
+        text_1: Text 1 (Top Panel): The option or idea that is being rejected or disliked.
+        text_2: Text 2 (Bottom Panel): The alternative option or idea that is being preferred or approved.""",
+        "number_of_texts": 2
+    }
 }
