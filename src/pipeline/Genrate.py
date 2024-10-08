@@ -288,6 +288,25 @@ class MakeCaptions:
         retries = 5
         for i in range(retries):
             try:
+                if number_of_texts == 2:
+                    query_template = (
+                                        f"Based on the prompt: '{prompt}', generate meme texts."
+                                        f" This is the description of the template: {description}"
+                                        f" Generate a suitable response with {number_of_texts} short, distinct texts (1-6 words each)."
+                                        f" Use any humor required"
+                                        f" Format the output exactly as follows: "
+                                        f"text_1: <text_1>\ntext_2: <text_2>."
+                                    )      
+                    
+                    response = self.model.generate_content(query_template)
+                    
+                    response_text = response.text.strip().split('\n')
+
+                    text_1 = response_text[0].replace("text_1:", "").strip().replace("_", " ")
+                    text_2 = response_text[1].replace("text_2:", "").strip().replace("_", " ")
+                                
+                    return (text_1, text_2)
+            
                 if number_of_texts == 3:
                     query_template = (
                                         f"Based on the prompt: '{prompt}', generate meme texts."
@@ -302,9 +321,9 @@ class MakeCaptions:
                     
                     response_text = response.text.strip().split('\n')
 
-                    text_1 = response_text[0].replace("text_1:", "").strip().lower().replace(" ", "_")
-                    text_2 = response_text[1].replace("text_2:", "").strip()
-                    text_3 = response_text[2].replace("text_3:", "").strip()
+                    text_1 = response_text[0].replace("text_1:", "").strip().replace("_", " ")
+                    text_2 = response_text[1].replace("text_2:", "").strip().replace("_", " ")
+                    text_3 = response_text[2].replace("text_3:", "").strip().replace("_", " ")
                                 
                     return (text_1, text_2, text_3)
                 
@@ -324,10 +343,10 @@ class MakeCaptions:
                     response_lines = response_text.split('\n')
 
                     if len(response_lines) >= 4:
-                        text_1 = response_lines[0].replace("text_1:", "").strip().lower().replace(" ", "_")
-                        text_2 = response_lines[1].replace("text_2:", "").strip()
-                        text_3 = response_lines[2].replace("text_3:", "").strip()
-                        text_4 = response_lines[3].replace("text_4:", "").strip()
+                        text_1 = response_lines[0].replace("text_1:", "").strip().replace("_", "")
+                        text_2 = response_lines[1].replace("text_2:", "").strip().replace("_", " ")
+                        text_3 = response_lines[2].replace("text_3:", "").strip().replace("_", " ")
+                        text_4 = response_lines[3].replace("text_4:", "").strip().replace("_", " ")
                         return (text_1, text_2, text_3, text_4)
                     else:
                         raise ValueError("Response does not contain the expected number of lines.")

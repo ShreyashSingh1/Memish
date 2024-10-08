@@ -21,6 +21,7 @@ Caption_maker = Genrate.MakeCaptions()
 def home():
     return render_template("index.html")
     
+    
 @app.route("/text-to-image-gen-meme", methods=["POST"])
 def make_image():
     try:
@@ -131,6 +132,7 @@ def upload_image():
     except Exception as e:
         logging.error(f"Error uploading image: {e}")
         return jsonify({"error": "Error uploading image"}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
