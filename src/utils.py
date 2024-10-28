@@ -1,6 +1,6 @@
 from publitio import PublitioAPI
 import os
-# from imgurpython import ImgurClient
+from imgurpython import ImgurClient
 
 
 working_dir = os.getcwd()
@@ -23,18 +23,18 @@ VIDEOMEMEPATHOUT = os.path.join(current_directory, "artifacts", "videomeme_out.m
 publitio_api = PublitioAPI(key=api_key , secret=api_secret)
 
 def savenft(path):
-    # client_id = 'eaa91a80f980b64'
-    # client_secret = '06777683059c78566531dcb821a785d809382f1f'
-    # client = ImgurClient(client_id, client_secret)
-    # response = client.upload_from_path(path, anon=True)
-    # image_link = response['link']
-    # return image_link, image_link
+    client_id = 'e838953025cdaad'
+    client_secret = 'afd3762b18b5a300833fb64908ccdeef13202132'
+    client = ImgurClient(client_id, client_secret)
+    response = client.upload_from_path(path, anon=True)
+    image_link = response['link']
+    return image_link, image_link
     
-    data = publitio_api.create_file(file=open(path, 'rb'),
-                            title='My title',
-                            description='My description')
+    # data = publitio_api.create_file(file=open(path, 'rb'),
+    #                         title='My title',
+    #                         description='My description')
             
-    return data['url_preview'], data["url_download"]
+    # return data['url_preview'], data["url_download"]
 
 template_paths = {
     "adam_coles_surprise_kiss": os.path.join(working_dir, "img_templates", "Adam_Coles_Surprise_Kiss_Catch_Wrestling_WWE_Bisou.jpeg"),

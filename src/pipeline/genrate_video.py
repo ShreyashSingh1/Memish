@@ -232,7 +232,7 @@ class VideoMeme:
             try:
                 data = f"""The meme should be witty, engaging, and include humor,you are free to pick any type of humor best suited for the meme. 
                         Based on the video description: '{video_description}', generate a meme. The user's words about the video are: '{prompt}'. 
-                        This is for an video meme with both top and bottom text. Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 5-6 words each."""
+                        This is for an video meme with both top and bottom text. Format the response using the keys **top_text** and **bottom_text**. Ensure both texts are funny and consist of 1-5 words each."""
             
 
                 response = self.model.generate_content(data)
