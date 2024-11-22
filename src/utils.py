@@ -27,8 +27,8 @@ def savenft(path):
     client_secret = 'afd3762b18b5a300833fb64908ccdeef13202132'
     #client = ImgurClient(client_id, client_secret)
     #response = client.upload_from_path(path, anon=True)
-    image_link = response['link']
-    return image_link, image_link
+    # image_link = response['link']
+    # return image_link, image_link
     
     data = publitio_api.create_file(file=open(path, 'rb'),
                              title='My title',
