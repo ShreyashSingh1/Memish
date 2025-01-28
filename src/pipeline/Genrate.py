@@ -10,7 +10,7 @@ from src.logger import logging
 import cv2
 import google.generativeai as genai
 import numpy as np
-genai.configure(api_key="AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk")
+genai.configure(api_key="AIzaSyBKMuJphlT_SS641OBtJmExu5tKZovKS8o")
 
 template_paths = utils.template_paths
 Template_Data = utils.TemplateMemeDescriptions
