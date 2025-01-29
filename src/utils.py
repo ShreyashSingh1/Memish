@@ -5,7 +5,7 @@ from imgurpython import ImgurClient
 
 working_dir = os.getcwd()
 
-GEN_KEY = "AIzaSyBKMuJphlT_SS641OBtJmExu5tKZovKS8o"
+GEN_KEY = "AIzaSyCmnii5qJ_H6_WHXtk3DxPE-K96Bj7w-lk"
 api_key = 'jP6avoTuQW3LhlQN6fkR'
 api_secret = 'zQz5nJtbbNLJliVe5gLq8zVwfiRQvBLB'
 

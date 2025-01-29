@@ -6,7 +6,7 @@ from PIL import Image
 
 def understand(prompt, animate=False, normal=False, photo=False):
     try:
-        genai.configure(api_key="AIzaSyBa5b8ZuK83ehPi52ua4Ly724ofJHTT5Zk")
+        genai.configure(api_key="AIzaSyCmnii5qJ_H6_WHXtk3DxPE-K96Bj7w-lk")
         model = genai.GenerativeModel("gemini-pro")
 
         def generate_caption(prompt_text, max_attempts=8):
@@ -58,6 +58,7 @@ def understand(prompt, animate=False, normal=False, photo=False):
                     try:
                         response = model.generate_content(prompt_text)
                         response_text = [item.strip() for item in response.text.split('\n') if item]
+                        print(response_text)
                         
                         top_text = response_text[0].replace("**top_text:**", "").replace("**top_text**:", "") if len(response_text) > 0 else ""
                         bottom_text = response_text[1].replace("**bottom_text:**", "").replace("\\", "").replace("**bottom_text**:", "") if len(response_text) > 1 else ""
