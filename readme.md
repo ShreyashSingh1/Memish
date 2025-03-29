@@ -1,6 +1,6 @@
 # Memish
 
-Welcome to **Dopameme**, the ultimate platform for creating all kinds of memes! Whether you're looking to generate memes from photos, prompts, videos, or trending templates, Dopameme has got you covered. Dive into the world of humor and creativity with our intuitive meme-making tools.
+Welcome to **Memish**, the ultimate platform for creating all kinds of memes! Whether you're looking to generate memes from photos, prompts, videos, or trending templates, Dopameme has got you covered. Dive into the world of humor and creativity with our intuitive meme-making tools.
 
 ## Features
 
