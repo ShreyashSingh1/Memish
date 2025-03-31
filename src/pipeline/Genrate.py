@@ -10,7 +10,7 @@ from src.logger import logging
 import cv2
 import google.generativeai as genai
 import numpy as np
-genai.configure(api_key="AIzaSyBKMuJphlT_SS641OBtJmExu5tKZovKS8o")
+genai.configure(api_key="")
 
 template_paths = utils.template_paths
 Template_Data = utils.TemplateMemeDescriptions
@@ -48,7 +48,7 @@ class GenPhoto:
 
     def query_and_generate_image(self, api_url, image_des, top_text, bottom_text):
         try:
-            headers = {"Authorization": "Bearer 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"}
+            headers = {"Authorization": "Bearer HF_TOKEN"}
             response = requests.post(api_url, headers=headers, json={"inputs": image_des})
             response.raise_for_status()  
 
