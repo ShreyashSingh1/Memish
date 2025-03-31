@@ -5,9 +5,9 @@ from imgurpython import ImgurClient
 
 working_dir = os.getcwd()
 
-GEN_KEY = "AIzaSyCmnii5qJ_H6_WHXtk3DxPE-K96Bj7w-lk"
-api_key = 'jP6avoTuQW3LhlQN6fkR'
-api_secret = 'zQz5nJtbbNLJliVe5gLq8zVwfiRQvBLB'
+GEN_KEY = ""
+api_key = ''
+api_secret = ''
 
 current_directory = os.getcwd()
 INPUT = os.path.join(current_directory, "artifacts", "Input.jpg")
@@ -23,8 +23,8 @@ VIDEOMEMEPATHOUT = os.path.join(current_directory, "artifacts", "videomeme_out.m
 publitio_api = PublitioAPI(key=api_key , secret=api_secret)
 
 def savenft(path):
-    client_id = 'e838953025cdaad'
-    client_secret = 'afd3762b18b5a300833fb64908ccdeef13202132'
+    client_id = ''
+    client_secret = ''
     #client = ImgurClient(client_id, client_secret)
     #response = client.upload_from_path(path, anon=True)
     # image_link = response['link']
