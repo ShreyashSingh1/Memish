@@ -1,6 +1,6 @@
 # Memish
 
-Welcome to **Memish**, the ultimate platform for creating all kinds of memes! Whether you're looking to generate memes from photos, prompts, videos, or trending templates, Dopameme has got you covered. Dive into the world of humor and creativity with our intuitive meme-making tools.
+Welcome to **Memish**, the ultimate platform for creating all kinds of memes! Whether you're looking to generate memes from photos, prompts, videos, or trending templates, Memish has got you covered. Dive into the world of humor and creativity with our intuitive meme-making tools.
 
 ## Features
 
@@ -21,25 +21,25 @@ Create hilarious video memes with ease!
 
 ### 4. Prompt to Template Meme
 Let the trends guide your meme creation!
-- **Trending Template Selection**: Simply provide a text prompt, and Dopameme will pick the most trending photo template to craft your meme.
+- **Trending Template Selection**: Simply provide a text prompt, and Memish will pick the most trending photo template to craft your meme.
 
 ## Core DAO Integration
 
-Dopameme is built on **Core DAO**, bringing decentralized features to the platform:
+Memish is built on **Core DAO**, bringing decentralized features to the platform:
 
 - **Tipping System**: Users can tip other users for sharing and liking memes. This feature incentivizes creativity and engagement within the community.
-- **Dynamic Wallets**: Dopameme uses dynamic wallets to facilitate seamless transactions. Every user gets a wallet that can be used for tipping and receiving tips, all powered by Core DAO.
+- **Dynamic Wallets**: Memish uses dynamic wallets to facilitate seamless transactions. Every user gets a wallet that can be used for tipping and receiving tips, all powered by Core DAO.
 
 ## Login/Signup with Anon Aadhaar
 
-Dopameme offers a unique and secure way to access the platform using **Anon Aadhaar**. This feature allows users to maintain their privacy while enjoying all the functionalities of the platform.
+Memish offers a unique and secure way to access the platform using **Anon Aadhaar**. This feature allows users to maintain their privacy while enjoying all the functionalities of the platform.
 
-- **Anon Aadhaar Integration**: Users can sign up or log in to Dopameme using their Aadhaar number, which will be anonymized to ensure privacy.
+- **Anon Aadhaar Integration**: Users can sign up or log in to Memish using their Aadhaar number, which will be anonymized to ensure privacy.
 - **Secure and Private**: The integration with Aadhaar is designed to provide a secure and private experience, ensuring that your identity remains protected while you create and share memes.
 
 ## Images
 
-Here are some screenshots of Dopameme in action:
+Here are some screenshots of Memish in action:
 
 ![Photo to Meme](https://i.imgur.com/Od25Pft.jpeg)
 *The Photo to Meme feature in action.*
@@ -58,10 +58,10 @@ Here are some screenshots of Dopameme in action:
 1. **Sign Up/Log In**: Create an account or log in to start making memes using **Anon Aadhaar** for secure access.
 2. **Choose Your Meme Type**: Select from photo to meme, prompt to image meme, prompt to video meme, or prompt to template meme.
 3. **Upload/Enter Prompt**: Upload your media or enter a text prompt.
-4. **Generate and Share**: Let Dopameme do the rest! Share your creations on social media directly from the platform.
+4. **Generate and Share**: Let Memish do the rest! Share your creations on social media directly from the platform.
 5. **Tip and Earn**: Engage with the community by tipping other users or earning tips for your memes, all through your dynamic wallet.
 
 ## License
-Dopameme is licensed under the MIT License. See `LICENSE` for more information.
+Memish is licensed under the MIT License. See `LICENSE` for more information.
 
 ---
