@@ -6,7 +6,7 @@ from PIL import Image
 
 def understand(prompt, animate=False, normal=False, photo=False):
     try:
-        genai.configure(api_key="AIzaSyCmnii5qJ_H6_WHXtk3DxPE-K96Bj7w-lk")
+        genai.configure(api_key="")
         model = genai.GenerativeModel("gemini-pro")
 
         def generate_caption(prompt_text, max_attempts=8):
